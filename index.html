@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Гостевой дом «Абрикос» — Ейск</title>
+    <meta
+      name="description"
+      content="Гостевой дом «Абрикос» в Ейске — уютный отдых на Азовском море. Номера, онлайн-бронирование."
+    />
+    <meta property="og:title" content="Гостевой дом «Абрикос», Ейск" />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href="https://abrikos-yeisk.ru/" />
+    <link rel="icon" href="/img/logo.jfif" type="image/jpeg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/reset.css" />
+    <link rel="stylesheet" href="/css/tokens.css" />
+    <link rel="stylesheet" href="/css/layout.css" />
+    <link rel="stylesheet" href="/css/components.css" />
+    <link rel="stylesheet" href="/css/pages.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="site-header">
+        <div class="container" style="height: var(--header-height); display: flex; align-items: center; gap: 12px">
+          <a data-nav href="/" style="flex: 1; text-decoration: none; color: #fff; font-weight: 800; font-size: 22px">
+            🍑 Абрикос
+            <span class="header-subtitle" style="font-size: 15px; font-weight: 400; margin-left: 10px; opacity: 0.82"
+              >мини-отель · Ейск</span
+            >
+          </a>
+          <button type="button" class="btn-primary" id="btn-book">Забронировать</button>
+        </div>
+      </header>
+
+      <main id="app-main"></main>
+
+      <footer style="background: var(--color-sky); color: #fff; padding: 32px 16px; margin-top: auto">
+        <div class="container">
+          <p>🍑 Абрикос · <a data-nav href="/rooms" style="color: inherit">Наши номера</a></p>
+          <p style="font-size: 12px; opacity: 0.7; margin-top: 16px">© 2026 Мини-отель Абрикос</p>
+        </div>
+      </footer>
+    </div>
+
+    <div id="cookie-banner" hidden style="position: fixed; bottom: 0; left: 0; right: 0; z-index: 60; background: var(--color-navy); border-top: 3px solid var(--color-sky); padding: 16px">
+      <div class="container" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between">
+        <p style="color: rgba(255,255,255,0.88); font-size: 14px; flex: 1; min-width: 240px">
+          🍪 Мы используем cookie для улучшения сайта.
+        </p>
+        <div style="display: flex; gap: 10px">
+          <button type="button" id="cookie-decline" style="padding: 8px 18px; border-radius: 9px; background: transparent; border: 1.5px solid rgba(255,255,255,0.3); color: #fff">
+            Отказаться
+          </button>
+          <button type="button" class="btn-primary" id="cookie-accept">Принять</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/data.js"></script>
+    <script src="/js/analytics.js"></script>
+    <script src="/js/render.js"></script>
+    <script src="/js/router.js"></script>
+    <script src="/js/header.js"></script>
+    <script src="/js/cookies.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        if (window.Analytics) window.Analytics.initIfAllowed();
+        if (window.Router) window.Router.start();
+      });
+    </script>
+  </body>
+</html>

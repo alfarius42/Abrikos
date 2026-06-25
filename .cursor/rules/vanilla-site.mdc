@@ -1,0 +1,38 @@
+---
+description: Стандарты production-сайта (HTML, CSS, JS)
+globs: "{index.html,css/**,js/**,img/**}"
+alwaysApply: false
+---
+
+# Vanilla site standards
+
+## CSS
+
+- Токены только в `css/tokens.css` (`:root { --color-sky: ... }`)
+- Порядок подключения: reset → tokens → layout → components → pages
+- Grid/Flex по умолчанию; absolute — только при необходимости
+- CTA «Забронировать»: `--color-sun` фон, `--color-navy` текст, font-weight 700
+
+## JavaScript
+
+- ES modules не обязательны; IIFE или `<script defer>` — как в существующих файлах
+- Роутер: History API, без перезагрузки; `popstate` + начальный `render(pathname)`
+- Данные номеров — один объект в `js/data.js`, не дублировать в HTML
+- Аналитика — обёртки в `js/analytics.js`; не вызывать `ym()` до согласия на cookie (если включено в config)
+
+## HTML
+
+- Семантика: `header`, `main`, `footer`, `nav`, `section`
+- `id="booking-widget"` — якорь для CTA «Забронировать»
+- Изображения: `loading="lazy"`, alt-тексты из data; финально WebP/AVIF в `img/rooms/`
+
+## agast.ru
+
+- Контейнер `#agast-widget-container` внутри `#booking-widget`
+- Предпочтение: **iframe** с кодом из ЛК agast; fallback — loader.js по документации agast
+- Placeholder в `js/config.js` → `AGAST_IFRAME_SRC` или `AGAST_HOTEL_ID`
+
+## Яндекс.Метрика
+
+- ID в `js/config.js` → `YANDEX_METRIKA_ID`
+- Виртуальные hit при `pushState`; цели из HANDOFF §7.3

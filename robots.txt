@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://abrikos-yeisk.ru/sitemap.xml

@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+prototype/node_modules/
+
+# Build
+dist/
+prototype/dist/
+.cache/
+
+# OS & IDE
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+*.log
+
+# Env & secrets (never commit real IDs in .env)
+.env
+.env.local
+.env.*.local
+
+# Local overrides
+*.local.html

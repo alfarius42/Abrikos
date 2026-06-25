@@ -1,0 +1,32 @@
+---
+description: Папка prototype — только референс, не источник кода для production
+alwaysApply: true
+---
+
+# Prototype — референс, не копипаст
+
+Папка `prototype/` — React-приложение из Figma Make. **Не переносить код оттуда в production.**
+
+## Запрещено
+
+- Копировать TSX/JSX, Tailwind-классы, shadcn-компоненты из `prototype/`
+- Добавлять React, Vite, npm-зависимости в корень проекта
+- Импортировать файлы из `prototype/` в `css/`, `js/`, `index.html`
+- Редактировать `prototype/` при задачах по production-сайту (кроме явной просьбы)
+
+## Разрешено и нужно
+
+- Смотреть `prototype/src/app/App.tsx` — визуал, тексты, данные номеров, UX-поведение
+- Читать `prototype/guidelines/HANDOFF.md` — ТЗ, токены, интеграции
+- Переписывать логику на чистый HTML/CSS/JS с тем же результатом для пользователя
+
+## Как переносить идеи
+
+| Из прототипа | В production |
+|--------------|--------------|
+| inline-стили / палитра `C.*` | CSS custom properties в `css/tokens.css` |
+| React state (страница, меню) | `js/router.js`, `js/header.js` |
+| `ROOMS`, `HOME_BLOCKS` | `js/data.js` |
+| Компоненты | функции рендера в `js/render.js` |
+
+При расхождении HANDOFF и прототипа — **приоритет у HANDOFF.md**.

@@ -1,0 +1,29 @@
+/* Layout: header, footer, page shell — см. HANDOFF §5.1, §5.8 */
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#app > main {
+  flex: 1;
+}
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: var(--header-height);
+  background: var(--color-sky);
+  transition: background 300ms ease, backdrop-filter 300ms ease, box-shadow 300ms ease;
+}
+
+.site-header.is-scrolled {
+  background: rgba(59, 130, 246, 0.72);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: var(--shadow-header);
+}
