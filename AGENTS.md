@@ -13,7 +13,9 @@
 ## Репозиторий
 
 - GitHub: https://github.com/alfarius42/Abrikos
-- Ветка: `main`
+- **develop** — разработка (полный репо, деплой dev/staging без секретов)
+- **main** — production-only (сайт без `prototype/` и dev-файлов)
+- Подробнее: `docs/BRANCHES.md`
 - Коммит и push — только по запросу пользователя
 
 ## Локальный просмотр

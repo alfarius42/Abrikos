@@ -35,5 +35,7 @@ alwaysApply: true
 ## Git
 
 - Репозиторий: https://github.com/alfarius42/Abrikos
-- Ветка: **main** (без feature-веток, если не попросят иное)
+- **develop** — разработка; **main** — production-only (без `prototype/`, `docs/`, `.cursor/`)
+- Деплой prod — с `main`; dev/staging — с `develop` (без секретов)
+- См. `docs/BRANCHES.md`
 - Коммиты — только по явной просьбе пользователя

@@ -6,11 +6,20 @@ globs: "{index.html,robots.txt,**/*.html}"
 
 # Деплой (Masterhost)
 
-- Статический сайт без бэкенда — загрузка файлов из корня репо в `public_html` (или каталог домена)
+- Статический сайт без бэкенда — загрузка файлов в `public_html` (или каталог домена)
 - Домен production: **abrikos-yeisk.ru**
 - History API (SPA): нужен `.htaccess` с fallback на `index.html` для Apache, либо аналог на nginx если доступен
 
-Пример `.htaccess` для Apache:
+## Ветки
+
+| Ветка | Назначение | Что выкладывать |
+|-------|------------|-----------------|
+| **main** | Production | Только `index.html`, `.htaccess`, `robots.txt`, `css/`, `js/`, `img/` |
+| **develop** | Dev/staging | Всё из репозитория, кроме секретов и `node_modules/` |
+
+См. `docs/BRANCHES.md`.
+
+## Apache (.htaccess)
 
 ```apache
 RewriteEngine On
@@ -21,6 +30,8 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.html [L]
 ```
 
+## Прочее
+
 - SSL — через панель Masterhost
 - `robots.txt`, `sitemap.xml`, `favicon.ico` — в корне сайта
-- Не деплоить `prototype/` на production (только dev-референс)
+- **Не деплоить** `prototype/` на production (только dev-референс в `develop`)

@@ -8,21 +8,27 @@ alwaysApply: true
 ## Репозиторий
 
 - **Remote:** `https://github.com/alfarius42/Abrikos.git`
-- **Ветка по умолчанию:** `main`
-- **Модель:** простой проект — коммиты напрямую в `main` (без PR, если пользователь не попросит)
+- **develop** — основная ветка разработки (полный репозиторий)
+- **main** — production-only (только публичный сайт, без `prototype/` и dev-файлов)
+- Подробнее: `docs/BRANCHES.md`
 
 ## Действия агента
 
 1. Перед коммитом: `git status`, `git diff`, `git log -1 --oneline`
-2. Коммит — **только по явной просьбе** пользователя
-3. Push — **только по явной просьбе**; для первого push: `git push -u origin main`
-4. Не коммитить: `.env`, ключи, реальные ID метрики/agast в секретных файлах
-5. Не использовать: `git push --force` на main, `git reset --hard`, amend без условий из user rules
+2. Разработка — коммиты в **develop** (если пользователь не указал иное)
+3. Коммит — **только по явной просьбе** пользователя
+4. Push — **только по явной просьбе**; первый push: `git push -u origin develop` и `git push -u origin main`
+5. Не коммитить: `.env`, ключи, реальные ID метрики/agast в секретных файлах
+6. Не использовать: `git push --force` на main, `git reset --hard`, amend без условий из user rules
+
+## Релиз в production
+
+- Перед деплоем на abrikos-yeisk.ru — перенести production-файлы из `develop` в `main`
+- Деплой production — только содержимое `main` (см. список путей в `docs/BRANCHES.md`)
 
 ## GitHub MCP / gh
 
 - Для issues и PR — `gh` CLI при необходимости
-- Репозиторий публичный, пустой — первый push инициализирует main на GitHub
 
 ## Сообщения коммитов
 
