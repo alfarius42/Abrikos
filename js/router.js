@@ -40,15 +40,27 @@
 
     if (route.name === 'rooms') {
       title = `${base} — Наши номера`;
+      description =
+        'Категории размещения гостевого дома «Абрикос»: от стандарта до апартаментов. Выберите номер и отправьте заявку на бронирование.';
     } else if (route.name === 'room') {
       const room = (window.SITE_DATA?.rooms || []).find(function (r) {
         return r.id === route.id;
       });
-      if (room) title = `${base} — ${room.name}`;
+      if (room) {
+        title = `${base} — ${room.name}`;
+        description = `${room.name}: ${room.tagline}. ${room.price}. Бронирование в гостевом доме «Абрикос», Ейск.`;
+      }
     } else if (route.name === 'privacy') {
       title = `${base} — Политика ПД`;
+      description =
+        'Политика обработки персональных данных и правила использования cookie для сайта гостевого дома «Абрикос».';
     } else if (route.name === 'price') {
       title = `${base} — Прайс-лист`;
+      description =
+        'Актуальные цены и условия размещения в гостевом доме «Абрикос». Уточняйте сезонные тарифы перед бронированием.';
+    } else if (route.name === 'notFound') {
+      title = `${base} — Страница не найдена`;
+      description = 'Запрошенная страница не найдена. Перейдите на главную сайта гостевого дома «Абрикос».';
     }
 
     document.title = title;

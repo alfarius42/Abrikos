@@ -4,13 +4,42 @@
 (function () {
   const cfg = window.SITE_CONFIG || {};
   const icons = window.SITE_ICONS || {};
+  const navItems =
+    cfg.nav || [
+      { label: 'Главная', href: '/' },
+      { label: 'Наши номера', href: '/rooms' },
+      { label: 'Прайс-лист', href: '/price' },
+      { label: 'Политика ПД', href: '/privacy' },
+    ];
 
   function escapeHtml(str) {
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+    return window.SiteUtils?.escapeHtml ? window.SiteUtils.escapeHtml(str) : String(str);
+  }
+
+  function renderNavLink(item, className, showArrow) {
+    return (
+      '<a class="' +
+      className +
+      '" data-nav href="' +
+      escapeHtml(item.href) +
+      '">' +
+      escapeHtml(item.label) +
+      (showArrow
+        ? '<span class="site-drawer__link-arrow">' + icons.chevronRight + '</span>'
+        : '') +
+      '</a>'
+    );
+  }
+
+  function renderFooterNavLinks() {
+    return navItems
+      .filter(function (item) {
+        return item.href !== '/';
+      })
+      .map(function (item) {
+        return renderNavLink(item, 'site-footer__link', false);
+      })
+      .join('');
   }
 
   function renderPhones(className) {
@@ -97,13 +126,6 @@
     const el = document.getElementById('site-drawer-root');
     if (!el) return;
 
-    const navItems = [
-      { label: 'Главная', href: '/' },
-      { label: 'Наши номера', href: '/rooms' },
-      { label: 'Прайс-лист', href: '/price' },
-      { label: 'Политика ПД', href: '/privacy' },
-    ];
-
     el.innerHTML =
       '<div class="site-drawer__overlay" id="drawer-overlay" hidden></div>' +
       '<aside class="site-drawer" id="site-drawer" aria-hidden="true">' +
@@ -118,15 +140,7 @@
       '<nav class="site-drawer__nav" aria-label="Основная навигация">' +
       navItems
         .map(function (item) {
-          return (
-            '<a class="site-drawer__link" data-nav href="' +
-            escapeHtml(item.href) +
-            '">' +
-            escapeHtml(item.label) +
-            '<span class="site-drawer__link-arrow">' +
-            icons.chevronRight +
-            '</span></a>'
-          );
+          return renderNavLink(item, 'site-drawer__link', true);
         })
         .join('') +
       '</nav>' +
@@ -176,9 +190,7 @@
       '</div>' +
       '<div class="site-footer__col">' +
       '<p class="site-footer__label">Навигация</p>' +
-      '<a class="site-footer__link" data-nav href="/rooms">Наши номера</a>' +
-      '<a class="site-footer__link" data-nav href="/price">Прайс-лист</a>' +
-      '<a class="site-footer__link" data-nav href="/privacy">Политика ПД</a>' +
+      renderFooterNavLinks() +
       '</div>' +
       '<div class="site-footer__col">' +
       '<p class="site-footer__label">Соцсети</p>' +

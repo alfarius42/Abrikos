@@ -3,17 +3,6 @@
  * @see docs/SPEC.md §3.2, §7.2
  */
 (function () {
-  function scrollToBookingWidget() {
-    document.getElementById('booking-widget')?.scrollIntoView({ behavior: 'smooth' });
-  }
-
-  function markPendingRoom(roomId) {
-    const container = document.getElementById('agast-widget-container');
-    if (container) {
-      container.setAttribute('data-pending-room', roomId);
-    }
-  }
-
   window.Booking = {
     openRoomBooking: function (roomId) {
       if (!roomId) return;
@@ -22,21 +11,13 @@
         window.Analytics.reachGoal('room_book_click', { room_id: roomId });
       }
 
-      if (location.pathname !== '/') {
-        if (window.Router) {
-          window.Router.navigate('/');
-          setTimeout(function () {
-            markPendingRoom(roomId);
-            scrollToBookingWidget();
-          }, 120);
-        } else {
-          location.href = '/#booking-widget';
-        }
-        return;
+      if (window.Navigation) {
+        window.Navigation.goHomeAndScrollToBooking(roomId);
+      } else if (window.Router) {
+        window.Router.navigate('/');
+      } else {
+        location.href = '/#booking-widget';
       }
-
-      markPendingRoom(roomId);
-      scrollToBookingWidget();
     },
   };
 

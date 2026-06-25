@@ -38,9 +38,10 @@ test.describe('Sprint 1.6 — Privacy + cookies', () => {
     await expect(page).toHaveURL('/privacy');
     await expect(page).toHaveTitle(/Политика ПД/);
     await expect(page.locator('.privacy-card')).toBeVisible();
-    await expect(page.locator('.privacy-section')).toHaveCount(8);
+    await expect(page.locator('.privacy-card__date')).toContainText('01.01.2026');
+    await expect(page.locator('.privacy-section')).toHaveCount(9);
     await expect(page.locator('.privacy-section__title').first()).toContainText('Общие положения');
-    await expect(page.locator('.privacy-section__text').nth(1)).toContainText('физическим лицом');
-    await expect(page.locator('.privacy-section__text').nth(1)).toContainText('ул. Советов');
+    await expect(page.locator('.privacy-section__body').first()).toContainText('Савин Александр Сергеевич');
+    await expect(page.locator('.privacy-section__body').nth(2)).toContainText('AGAST');
   });
 });

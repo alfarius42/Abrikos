@@ -26,9 +26,17 @@ window.SITE_CONFIG = {
     max: 'https://max.ru/join/PcwYNn-KgjZOx5ikMEHi51jpMbY4C7YYBMmuiKVkWuE',
   },
 
+  nav: [
+    { label: 'Главная', href: '/' },
+    { label: 'Наши номера', href: '/rooms' },
+    { label: 'Прайс-лист', href: '/price' },
+    { label: 'Политика ПД', href: '/privacy' },
+  ],
+
   legal: {
     /** Управление физлицом, без ИНН/ОГРН на сайте */
     operatorType: 'individual',
+    operatorName: 'Савин Александр Сергеевич',
     displayName: 'Гостевой дом «Абрикос»',
     address: 'Россия, Ейск, ул. Советов, д. 12',
     inn: null,

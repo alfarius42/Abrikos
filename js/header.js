@@ -1,12 +1,4 @@
 (function () {
-  function scrollToTop(smooth) {
-    window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'instant' });
-  }
-
-  function scrollToBooking() {
-    document.getElementById('booking-widget')?.scrollIntoView({ behavior: 'smooth' });
-  }
-
   function getDrawerEls() {
     return {
       drawer: document.getElementById('site-drawer'),
@@ -78,12 +70,15 @@
     document.getElementById('site-logo')?.addEventListener('click', function () {
       closePhoneMenu();
       if (location.pathname === '/') {
-        scrollToTop(true);
+        if (window.Navigation) {
+          window.Navigation.scrollToTop();
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      } else if (window.Navigation) {
+        window.Navigation.goHomeAndScrollTop();
       } else if (window.Router) {
         window.Router.navigate('/');
-        setTimeout(function () {
-          scrollToTop(true);
-        }, 50);
       } else {
         location.href = '/';
       }
@@ -95,14 +90,19 @@
       closePhoneMenu();
 
       if (location.pathname !== '/') {
-        if (window.Router) {
+        if (window.Navigation) {
+          window.Navigation.goHomeAndScrollToBooking('');
+        } else if (window.Router) {
           window.Router.navigate('/');
-          setTimeout(scrollToBooking, 120);
         } else {
           location.href = '/#booking-widget';
         }
       } else {
-        scrollToBooking();
+        if (window.Navigation) {
+          window.Navigation.scrollToBookingWidget();
+        } else {
+          document.getElementById('booking-widget')?.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     });
 
