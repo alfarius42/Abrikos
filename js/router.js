@@ -6,6 +6,7 @@
     if (pathname === '/') return { name: 'home' };
     if (pathname === '/rooms') return { name: 'rooms' };
     if (pathname === '/privacy') return { name: 'privacy' };
+    if (pathname === '/price') return { name: 'price' };
     const roomMatch = pathname.match(/^\/rooms\/([^/]+)$/);
     if (roomMatch) return { name: 'room', id: roomMatch[1] };
     return { name: 'notFound' };
@@ -32,10 +33,10 @@
 
   function updateMeta(pathname, route) {
     const cfg = window.SITE_CONFIG || {};
-    const base = cfg.siteName || 'Мини-отель «Абрикос»';
+    const base = cfg.siteName || 'Гостевой дом «Абрикос»';
     let title = base;
     let description =
-      'Мини-отель «Абрикос» в Ейске — уютный отдых на Азовском море. 7 номеров, онлайн-бронирование.';
+      'Гостевой дом «Абрикос» в Ейске — уютный отдых на Азовском море. Номера, онлайн-бронирование.';
 
     if (route.name === 'rooms') {
       title = `${base} — Наши номера`;
@@ -46,6 +47,8 @@
       if (room) title = `${base} — ${room.name}`;
     } else if (route.name === 'privacy') {
       title = `${base} — Политика ПД`;
+    } else if (route.name === 'price') {
+      title = `${base} — Прайс-лист`;
     }
 
     document.title = title;

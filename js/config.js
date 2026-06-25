@@ -4,11 +4,12 @@
  */
 window.SITE_CONFIG = {
   siteName: 'Гостевой дом «Абрикос»',
-  siteTagline: 'гостевой дом · Ейск',
+  siteNameShort: 'Абрикос',
+  siteTagline: 'Ейск',
   siteUrl: 'https://abrikos-yeisk.ru',
 
   logo: {
-    src: '/img/logo.jfif',
+    src: '/img/logo.png',
     alt: 'Гостевой дом «Абрикос», Ейск',
   },
 
