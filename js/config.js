@@ -15,6 +15,7 @@ window.SITE_CONFIG = {
 
   logo: {
     src: '/img/logo.webp',
+    headerSrc: '/img/logo-header.webp',
     alt: 'Гостевой дом «Абрикос», Ейск',
   },
 

@@ -55,11 +55,24 @@
       currentIndex = (index + slides.length) % slides.length;
       var slide = slides[currentIndex];
 
-      mainImage.setAttribute('src', slide.src);
+      if (mainImage.getAttribute('src') !== slide.src) {
+        mainImage.setAttribute('src', slide.src);
+      }
       if (slide.alt) mainImage.setAttribute('alt', slide.alt);
       if (captionEl) captionEl.textContent = slide.caption;
       if (counterEl) counterEl.textContent = currentIndex + 1 + ' / ' + slides.length;
       setActiveThumb(currentIndex);
+      if (isSlider) preloadAdjacentSlides();
+    }
+
+    function preloadAdjacentSlides() {
+      if (!slides.length) return;
+      var nextIndex = (currentIndex + 1) % slides.length;
+      var prevIndex = (currentIndex - 1 + slides.length) % slides.length;
+      [slides[nextIndex].src, slides[prevIndex].src].forEach(function (src) {
+        var img = new Image();
+        img.src = src;
+      });
     }
 
     slides.forEach(function (slide, index) {
@@ -91,6 +104,36 @@
           goTo(currentIndex + 1);
         }
       });
+
+      var touchStartX = 0;
+      var touchStartY = 0;
+      var swipeThreshold = 48;
+
+      root.addEventListener(
+        'touchstart',
+        function (event) {
+          if (!event.changedTouches.length) return;
+          touchStartX = event.changedTouches[0].clientX;
+          touchStartY = event.changedTouches[0].clientY;
+        },
+        { passive: true }
+      );
+
+      root.addEventListener(
+        'touchend',
+        function (event) {
+          if (!event.changedTouches.length) return;
+          var deltaX = event.changedTouches[0].clientX - touchStartX;
+          var deltaY = event.changedTouches[0].clientY - touchStartY;
+          if (Math.abs(deltaX) < swipeThreshold || Math.abs(deltaX) < Math.abs(deltaY)) return;
+          if (deltaX < 0) {
+            goTo(currentIndex + 1);
+          } else {
+            goTo(currentIndex - 1);
+          }
+        },
+        { passive: true }
+      );
 
       root.setAttribute('tabindex', '0');
     }

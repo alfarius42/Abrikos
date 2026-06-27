@@ -65,6 +65,7 @@
 
     onConsentAccepted: function () {
       initMetrika();
+      this.trackPage(location.pathname);
     },
   };
 })();

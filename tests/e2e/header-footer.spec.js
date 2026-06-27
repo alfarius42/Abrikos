@@ -10,7 +10,7 @@ test.describe('Sprint 1.1 — Header + Footer', () => {
 
   test('header renders logo, phone dropdown and book CTA', async ({ page }) => {
     await expect(page.locator('.site-header')).toBeVisible();
-    await expect(page.locator('.site-header__logo-img')).toHaveAttribute('src', /logo\.webp/);
+    await expect(page.locator('.site-header__logo-img')).toHaveAttribute('src', /logo-header\.webp/);
     await expect(page.locator('.site-header__logo-text--full')).toContainText('Гостевой дом «Абрикос»');
     await expect(page.locator('.site-header__logo-tagline')).toContainText('Ейск');
     await expect(page.locator('.site-header__logo-tagline')).not.toContainText('гостевой дом');
@@ -38,7 +38,7 @@ test.describe('Sprint 1.1 — Header + Footer', () => {
     await expect(page.locator('.site-header__logo-text--short')).toBeVisible();
     await expect(page.locator('.site-header__logo-text--short')).toHaveText('Абрикос');
     await expect(page.locator('.site-header__logo-text--full')).toBeHidden();
-    await expect(page.locator('.site-header__logo-img')).toHaveAttribute('src', /logo\.webp/);
+    await expect(page.locator('.site-header__logo-img')).toHaveAttribute('src', /logo-header\.webp/);
   });
 
   test('mobile header opens phone dropdown with clickable numbers', async ({ page }) => {

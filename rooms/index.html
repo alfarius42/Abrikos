@@ -3,21 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Yandex.Metrika counter -->
-    <script type="text/javascript">
-      (function(m,e,t,r,i,k,a){
-        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();
-        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js', 'ym');
-
-      ym(88914059, 'init', {webvisor:true, clickmap:true, referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
-    </script>
-    <noscript><div><img src="https://mc.yandex.ru/watch/88914059" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-    <!-- /Yandex.Metrika counter -->
-
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://mc.yandex.ru; worker-src blob:; style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://docs.google.com https://mc.yandex.ru wss://mc.yandex.ru https://cdn.jsdelivr.net https://a.tile.openstreetmap.org https://b.tile.openstreetmap.org https://c.tile.openstreetmap.org; frame-src 'self' https://agast.ru https://*.agast.ru https://yandex.ru https://*.yandex.ru; object-src 'none'; base-uri 'self'; form-action 'self'" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://mc.yandex.ru; worker-src blob:; style-src 'self' https://cdn.jsdelivr.net; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://docs.google.com https://mc.yandex.ru wss://mc.yandex.ru https://cdn.jsdelivr.net https://a.tile.openstreetmap.org https://b.tile.openstreetmap.org https://c.tile.openstreetmap.org; frame-src 'self' https://agast.ru https://*.agast.ru https://yandex.ru https://*.yandex.ru; object-src 'none'; base-uri 'self'; form-action 'self'" />
     <title>Гостевой дом «Абрикос» — Наши номера</title>
     <meta
       name="description"
@@ -36,12 +22,10 @@
     <link rel="canonical" href="https://abrikos-yeisk.ru/rooms" />
     <link rel="icon" href="/img/favicon-32.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/img/logo.webp" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preload" href="/img/rooms/1-main.webp" as="image" type="image/webp" fetchpriority="high" />
+    <link rel="preload" href="/fonts/inter/inter-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter/inter-cyrillic-700-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/css/fonts.css" />
     <link rel="stylesheet" href="/css/reset.css" />
     <link rel="stylesheet" href="/css/tokens.css" />
     <link rel="stylesheet" href="/css/layout.css" />
@@ -54,7 +38,7 @@
         <div class="site-header__inner container">
           <button type="button" class="site-header__burger" id="btn-menu" aria-label="Меню" aria-expanded="false" aria-controls="site-drawer">☰</button>
           <a class="site-header__logo" id="site-logo" href="/">
-            <img src="/img/logo.webp" alt="Гостевой дом «Абрикос», Ейск" width="36" height="36" class="site-header__logo-img" />
+            <img src="/img/logo-header.webp" alt="Гостевой дом «Абрикос», Ейск" width="36" height="36" class="site-header__logo-img" />
             <span class="site-header__logo-text site-header__logo-text--full">Гостевой дом «Абрикос»</span>
             <span class="site-header__logo-text site-header__logo-text--short">Абрикос</span>
             <span class="site-header__logo-tagline">Ейск</span>
@@ -108,7 +92,7 @@
             <div class="rooms-grid">
               <article class="room-card">
                 <a class="room-card__media" href="/rooms/1" tabindex="-1" aria-hidden="true">
-                  <img src="/img/rooms/1-main.webp" alt="Номер 1" loading="lazy" width="800" height="600" />
+                  <img src="/img/rooms/1-main.webp" alt="Номер 1" fetchpriority="high" width="800" height="600" />
                 </a>
                 <div class="room-card__body">
                   <div class="room-card__head"><h2 class="room-card__title"><a href="/rooms/1">Номер 1</a></h2><span class="room-card__area">18 м²</span></div>
@@ -243,15 +227,15 @@
       </div>
     </div>
 
-    <script src="/js/config.js"></script>
-    <script src="/js/seo.js"></script>
-    <script src="/js/prices.js"></script>
-    <script src="/js/analytics.js"></script>
-    <script src="/js/utils.js"></script>
-    <script src="/js/navigation.js"></script>
-    <script src="/js/booking.js"></script>
-    <script src="/js/header.js"></script>
-    <script src="/js/cookies.js"></script>
-    <script src="/js/bootstrap.js"></script>
+    <script defer src="/js/config.js"></script>
+    <script defer src="/js/seo.js"></script>
+    <script defer src="/js/prices.js"></script>
+    <script defer src="/js/analytics.js"></script>
+    <script defer src="/js/utils.js"></script>
+    <script defer src="/js/navigation.js"></script>
+    <script defer src="/js/booking.js"></script>
+    <script defer src="/js/header.js"></script>
+    <script defer src="/js/cookies.js"></script>
+    <script defer src="/js/bootstrap.js"></script>
   </body>
 </html>
