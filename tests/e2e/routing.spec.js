@@ -27,7 +27,8 @@ test.describe('Routing contracts — price, notFound, popstate', () => {
 
   test('popstate works for browser back/forward', async ({ page }) => {
     await page.goto('/');
-    await page.locator('.home-cta__btn').click();
+    await page.locator('#btn-menu').click();
+    await page.locator('.site-drawer__link[href="/rooms"]').click();
     await expect(page).toHaveURL('/rooms');
 
     await page.locator('.room-card').first().locator('.room-card__more').click();

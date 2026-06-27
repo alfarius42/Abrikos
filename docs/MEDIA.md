@@ -6,8 +6,9 @@
 
 | Файл | Назначение |
 |------|------------|
-| `img/logo.png` | Текущий логотип (header, fallback favicon) |
-| `img/favicon.svg` | Favicon для вкладки браузера |
+| `img/logo.png` | Логотип в шапке и favicon (вкладка, Apple Touch Icon) |
+| `img/favicon-32.png` | Оптимизированная копия favicon 32×32 (генерируется из logo.png) |
+| `img/archive/favicon.svg` | Архив: прежний упрощённый favicon |
 | `img/logo-contrast.svg` | Предложенный контрастный знак в цветах сайта |
 
 ## Главная (`/`)

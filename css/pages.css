@@ -92,10 +92,6 @@
   .home-block__grid--reverse .home-block__media {
     order: unset;
   }
-
-  .home-block__media {
-    order: -1;
-  }
 }
 
 /* ─── Home: CTA banner ─── */
@@ -138,6 +134,103 @@
   .home-cta__banner {
     padding: 28px 24px;
   }
+}
+
+/* ─── Home: map ─── */
+
+.home-map {
+  background: var(--color-foam);
+  padding: 52px 0;
+}
+
+.home-map .home-block__text p + p {
+  margin-top: 12px;
+}
+
+.home-map__address {
+  font-weight: 700;
+}
+
+.home-map__hint {
+  font-size: 14px;
+  color: var(--color-navy-mid);
+  opacity: 1;
+}
+
+.home-map__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 4px;
+}
+
+.home-map__link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-sky);
+  text-decoration: none;
+}
+
+.home-map__link:hover {
+  text-decoration: underline;
+}
+
+.home-map__canvas {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  min-height: 280px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-sky-pale);
+  box-shadow: 0 6px 32px rgba(59, 130, 246, 0.14);
+}
+
+.home-map__canvas:focus {
+  outline: 2px solid var(--color-sky-light);
+  outline-offset: 2px;
+}
+
+.home-map__canvas .ol-viewport,
+.home-map__canvas .ol-overlaycontainer-stopevent {
+  border-radius: inherit;
+}
+
+.home-map__canvas .ol-control button {
+  background-color: var(--color-white);
+  color: var(--color-navy);
+}
+
+.home-map__canvas .ol-attribution {
+  font-size: 11px;
+  max-width: calc(100% - 48px);
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 4px 0 0 0;
+}
+
+.home-map__canvas iframe,
+.home-map__canvas img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  border: 0;
+  object-fit: cover;
+}
+
+.home-map__canvas--fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+}
+
+.home-map__fallback {
+  font-size: 14px;
+  color: var(--color-navy-mid);
+  line-height: 1.5;
 }
 
 /* ─── Booking widget ─── */

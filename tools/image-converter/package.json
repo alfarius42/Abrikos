@@ -1,0 +1,13 @@
+{
+  "name": "abrikos-image-converter",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "convert": "node convert.mjs",
+    "watch": "node convert.mjs --watch"
+  },
+  "dependencies": {
+    "chokidar": "^4.0.3",
+    "sharp": "^0.34.2"
+  }
+}

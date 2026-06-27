@@ -25,3 +25,9 @@ Thumbs.db
 
 # Local overrides
 *.local.html
+
+# Исходники изображений (JPEG/PNG) перед конвертацией в WebP
+ImageSources/
+
+# Зависимости локального конвертера
+tools/image-converter/node_modules/

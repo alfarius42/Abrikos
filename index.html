@@ -11,8 +11,7 @@
     <meta property="og:title" content="Гостевой дом «Абрикос», Ейск" />
     <meta property="og:type" content="website" />
     <link rel="canonical" href="https://abrikos-yeisk.ru/" />
-    <link rel="icon" href="/img/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="/img/logo.png" type="image/png" sizes="192x192" />
+    <link rel="icon" href="/img/logo.png" type="image/png" sizes="any" />
     <link rel="apple-touch-icon" href="/img/logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -103,7 +102,7 @@
                 </div>
                 <div class="home-block__media">
                   <div class="home-block__image-wrap">
-                    <img src="/img/home-block-1.webp" alt="Гостевой дом «Абрикос», Ейск" loading="lazy" width="900" height="675" />
+                    <img src="/img/home-block-1.webp" alt="Гостевой дом «Абрикос», Ейск" loading="lazy" width="800" height="600" />
                   </div>
                 </div>
               </div>
@@ -119,7 +118,7 @@
                 </div>
                 <div class="home-block__media">
                   <div class="home-block__image-wrap">
-                    <img src="/img/home-block-2.webp" alt="Азовское море, Ейск" loading="lazy" width="900" height="675" />
+                    <img src="/img/home-block-2.webp" alt="Азовское море, Ейск" loading="lazy" width="594" height="343" />
                   </div>
                 </div>
               </div>
@@ -135,7 +134,7 @@
                 </div>
                 <div class="home-block__media">
                   <div class="home-block__image-wrap">
-                    <img src="/img/home-block-3.webp" alt="Уютный номер гостевого дома" loading="lazy" width="900" height="675" />
+                    <img src="/img/home-block-3.webp" alt="Уютный номер гостевого дома" loading="lazy" width="800" height="600" />
                   </div>
                 </div>
               </div>
@@ -151,7 +150,7 @@
                 </div>
                 <div class="home-block__media">
                   <div class="home-block__image-wrap">
-                    <img src="/img/home-block-4.webp" alt="Апартаменты для семьи" loading="lazy" width="900" height="675" />
+                    <img src="/img/home-block-4.webp" alt="Апартаменты для семьи" loading="lazy" width="800" height="600" />
                   </div>
                 </div>
               </div>
@@ -159,14 +158,23 @@
           </section>
         </div>
 
-        <section class="home-cta">
+        <section class="home-map" id="location" aria-labelledby="home-map-title">
           <div class="container">
-            <div class="home-cta__banner">
-              <div class="home-cta__copy">
-                <h2>Посмотрите наши номера</h2>
-                <p>8 вариантов размещения на любой вкус и бюджет.</p>
+            <div class="home-block__grid">
+              <div class="home-block__text">
+                <h2 id="home-map-title">Как нас найти</h2>
+                <p>Гостевой дом в центре Ейска — рядом море, набережная и городская инфраструктура.</p>
+                <p class="home-map__address">Россия, Ейск, ул. Советов, д. 12</p>
+                <p class="home-map__hint">10 минут пешком до Азовского моря</p>
+                <div class="home-map__links">
+                  <a class="home-map__link" id="home-map-link-yandex" href="#" target="_blank" rel="noopener noreferrer">Яндекс.Карты</a>
+                  <a class="home-map__link" id="home-map-link-2gis" href="#" target="_blank" rel="noopener noreferrer">2GIS</a>
+                  <a class="home-map__link" id="home-map-link-osm" href="#" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>
+                </div>
               </div>
-              <a class="btn-primary home-cta__btn" href="/rooms">Все номера</a>
+              <div class="home-block__media">
+                <div id="home-map-canvas" class="home-map__canvas" role="region" aria-label="Интерактивная карта расположения гостевого дома"></div>
+              </div>
             </div>
           </div>
         </section>
@@ -241,6 +249,7 @@
     <script src="/js/utils.js"></script>
     <script src="/js/navigation.js"></script>
     <script src="/js/booking.js"></script>
+    <script src="/js/map.js"></script>
     <script src="/js/header.js"></script>
     <script src="/js/cookies.js"></script>
     <script>

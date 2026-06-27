@@ -43,6 +43,15 @@ window.SITE_CONFIG = {
     ogrn: null,
   },
 
+  /** Карта на главной — OpenLayers + OpenStreetMap, без API-ключа */
+  location: {
+    address: 'Россия, Ейск, ул. Советов, д. 12',
+    lat: 46.7194089,
+    lng: 38.2660818,
+    zoom: 16,
+    hint: '10 минут пешком до Азовского моря',
+  },
+
   /** Яндекс.Метрика — пустая строка = не инициализировать */
   yandexMetrikaId: '',
 
@@ -55,4 +64,12 @@ window.SITE_CONFIG = {
    */
   agastIframeSrc: '',
   agastHotelId: '',
+
+  /**
+   * Яндекс.Карты — iframe embed или статичный скрин.
+   * embed: код «Поделиться → HTML» из конструктора карт Яндекса.
+   * image: путь к скриншоту, например /img/map.webp
+   */
+  yandexMapEmbedSrc: '',
+  yandexMapImageSrc: '',
 };
