@@ -1,16 +1,17 @@
 # SPRINTS — roadmap и контроль выполнения
 
-Документ ведется в связке с `docs/SPEC.md` и отражает фактический прогресс реализации.
+Связан с `docs/SPEC.md`, отражает фактический статус MPA-проекта.
 
 ## Статус спринтов (summary)
 
 | Спринт | Название | Статус |
 |--------|----------|--------|
 | 0 | Документация и подготовка | Закрыт |
-| 1 | Верстка и базовая логика | В работе |
+| 0.1 | Миграция на MPA + синхронизация docs | Закрыт |
+| 1 | Верстка и базовая логика | Закрыт |
 | 2 | Яндекс.Метрика | Ожидает данных |
 | 3 | Agast интеграция | Ожидает данных |
-| 4 | Тестирование и стабилизация | В работе (e2e есть, покрытие расширяется) |
+| 4 | Тестирование и стабилизация | В работе |
 | 5 | Релиз и деплой | Ожидает |
 
 ---
@@ -20,82 +21,84 @@
 **Статус:** закрыт.
 
 - [x] Базовая спецификация и roadmap.
-- [x] Модель веток `develop/main`.
-- [x] Зафиксированы pending-зависимости заказчика.
+- [x] Git-модель `develop/main`.
+- [x] Зафиксированы `PENDING` зависимости заказчика.
 
 ---
 
-## Sprint 1 — Верстка с заглушками
+## Sprint 0.1 — Миграция на MPA и обновление документации
 
-**Цель:** собрать production-сайт на текущем контенте с готовностью к подключению Метрики и Agast.
+**Статус:** закрыт.
+
+### Выполнено по коду
+
+- [x] Введена MPA-структура страниц:
+  - `/index.html`
+  - `/rooms/index.html`
+  - `/rooms/1..6/index.html`
+  - `/rooms/apartments/index.html`
+  - `/price/index.html`
+  - `/privacy/index.html`
+  - `/404.html`
+- [x] Удален SPA runtime (`router`, `render*`, `shell`, `data`).
+- [x] Обновлены сценарии CTA бронирования (`/?room=<id>#booking-widget`).
+- [x] Обновлены `.htaccess` и `sitemap.xml`.
+
+### Выполнено по документации
+
+- [x] Переписан `docs/SPEC.md` под MPA.
+- [x] Обновлен `docs/SPRINTS.md`.
+- [x] Синхронизированы `README.md`, `docs/BRANCHES.md`, `AGENTS.md`, `.cursor/rules`.
+
+### Acceptance
+
+- [x] Сайт работает как набор статических HTML.
+- [x] Прямой заход на страницы работает без SPA fallback.
+- [x] Документация синхронизирована с MPA.
+- [x] Тестовый контракт обновлен под MPA.
+
+---
+
+## Sprint 1 — Верстка и базовая логика (MPA baseline)
+
+**Статус:** закрыт.
 
 ### 1.1 Header + Footer
 
-**Статус:** закрыт.
-
-- [x] sticky header, burger/drawer, CTA, телефоны.
-- [x] footer с навигацией и соцссылками.
-- [x] клик по логотипу: `/` -> scrollTop, с других страниц -> переход на `/` + scrollTop.
-
-Покрытие: `tests/e2e/header-footer.spec.js`.
+- [x] Sticky header, drawer, CTA, телефоны.
+- [x] Footer с навигацией, соцссылками и контактами.
+- [x] Логотип: на `/` скролл вверх, на других страницах переход на `/`.
 
 ### 1.2 Главная
 
-**Статус:** закрыт.
-
-- [x] page header.
+- [x] Page header.
 - [x] 4 шахматных блока.
 - [x] CTA-баннер.
-- [x] блок бронирования с `#booking-widget` и `#agast-widget-container`.
+- [x] `#booking-widget` и `#agast-widget-container`.
 
-Покрытие: `tests/e2e/home.spec.js`.
+### 1.3 `/rooms`
 
-### 1.3 Разводящая `/rooms`
+- [x] 7 карточек категорий.
+- [x] Площадь, цена, переходы в деталки.
+- [x] CTA бронирования категории.
 
-**Статус:** закрыт.
+### 1.4 `/rooms/:id`
 
-- [x] сетка карточек из `js/data.js`.
-- [x] бейдж площади, цена, переходы в `/rooms/:id`.
-- [x] CTA бронирования категории (заглушка до Sprint 3).
+- [x] Все 7 детальных страниц (`1..6`, `apartments`).
+- [x] Галерея thumbs/main.
+- [x] Характеристики и оснащение.
+- [x] CTA бронирования категории.
 
-Покрытие: `tests/e2e/rooms.spec.js`.
+### 1.5 `/price`
 
-### 1.4 Деталка `/rooms/:id`
+- [x] Структура страницы по контракту.
+- [x] Таблица категорий.
+- [x] Маркер `PENDING_CONTENT` для финальных тарифов.
 
-**Статус:** частично.
+### 1.6 `/privacy` + cookies
 
-- [x] базовый роут и базовый контент.
-- [ ] полноценная галерея main+thumbs.
-- [ ] полный блок характеристик и оснащения.
-- [ ] CTA бронирования категории как на `/rooms`.
-
-Acceptance (для закрытия подэтапа):
-
-- переключение превью работает;
-- отображаются `features/capacity/beds`;
-- CTA открывает бронирование выбранной категории (или заглушку Sprint 3).
-
-### 1.5 Страница `/price`
-
-**Статус:** в работе.
-
-- [x] маршрут и навигационные ссылки.
-- [ ] рендер страницы по контракту.
-- [ ] таблица и условия (`PENDING_CONTENT` до тарифов).
-
-Acceptance:
-
-- `/price` открывается без 404;
-- структура соответствует контракту в `SPEC.md`.
-
-### 1.6 Политика ПД + cookies
-
-**Статус:** закрыт.
-
-- [x] страница `/privacy`.
-- [x] баннер cookie и сохранение consent.
-
-Покрытие: `tests/e2e/privacy-cookies.spec.js`.
+- [x] Политика ПД.
+- [x] Cookie-banner с сохранением consent.
 
 ---
 
@@ -103,12 +106,9 @@ Acceptance:
 
 **Статус:** ожидает `yandexMetrikaId`.
 
-Задачи:
-
-- [ ] заполнить ID в `js/config.js`.
-- [ ] проверить `hit` на маршрутах SPA.
-- [ ] проверить цели: `header_book_click`, `room_book_click`, `room_view`, `phone_click`, `booking_widget_view`, `cookie_accept`.
-- [ ] убедиться, что до consent события не уходят, если `metrikaRequiresConsent = true`.
+- [ ] Заполнить ID в `js/config.js`.
+- [ ] Проверить pageview и цели: `header_book_click`, `room_book_click`, `phone_click`, `cookie_accept`.
+- [ ] Проверить, что до consent события не уходят при `metrikaRequiresConsent = true`.
 
 ---
 
@@ -116,40 +116,39 @@ Acceptance:
 
 **Статус:** ожидает данных Agast.
 
-Задачи:
-
-- [ ] подключить iframe (`agastIframeSrc`) или fallback (`agastHotelId`).
-- [ ] заполнить `agastRoomId` для 7 категорий.
-- [ ] довести `openRoomBooking(roomId)` до рабочего сценария выбора категории.
-- [ ] проверить мобильный/десктопный рендер виджета.
+- [ ] Подключить iframe (`agastIframeSrc`) или fallback (`agastHotelId`).
+- [ ] Привязать room IDs при необходимости.
+- [ ] Проверить сценарий CTA бронирования на всех страницах.
+- [ ] Проверить мобильный/десктопный рендер виджета.
 
 ---
 
 ## Sprint 4 — Тестирование и стабилизация
 
-**Статус:** в работе (есть Playwright-контур).
+**Статус:** в работе.
 
 ### Автотесты (Playwright)
 
-Текущие спек-файлы:
+Текущие файлы:
 
 - `tests/e2e/header-footer.spec.js`
 - `tests/e2e/home.spec.js`
 - `tests/e2e/rooms.spec.js`
 - `tests/e2e/privacy-cookies.spec.js`
+- `tests/e2e/routing.spec.js`
 
-План расширения:
+План:
 
-- [ ] `/price`, `notFound`, `popstate/back-forward`.
-- [ ] детальная `/rooms/:id` после завершения 1.4.
-- [ ] сценарии заглушки/интеграции бронирования с внутренних страниц.
+- [ ] Расширить проверку `/404` и SEO-мета.
+- [ ] Добавить детальные проверки для `/rooms/:id` (галерея/характеристики).
+- [ ] Добавить smoke по `/price` и бронированию с query/hash.
 
 ### Ручной QA перед релизом
 
-- [ ] маршруты `/`, `/rooms`, `/rooms/:id`, `/price`, `/privacy`.
-- [ ] адаптивность (iOS Safari, Android Chrome).
-- [ ] SEO-блок: title/canonical/robots/sitemap.
-- [ ] smoke интеграций: Метрика и Agast.
+- [ ] URL: `/`, `/rooms`, `/rooms/:id`, `/price`, `/privacy`, `404`.
+- [ ] Адаптивность (iOS Safari, Android Chrome).
+- [ ] SEO: `title`, `canonical`, `robots`, `sitemap`.
+- [ ] Smoke Метрики и Agast.
 
 ---
 
@@ -157,26 +156,16 @@ Acceptance:
 
 **Статус:** ожидает.
 
-Поток:
-
-1. Закрыть Sprint 1-4 на `develop`.
-2. Перенести production-файлы в `main`.
-3. Запушить `main`.
-4. Деплой на Masterhost.
-5. Постдеплой smoke-check.
-
-Acceptance:
-
-- production доступен по `https://abrikos-yeisk.ru`;
-- критичных багов P0/P1 нет;
-- маршруты и базовые сценарии работают.
+1. Закрыть Sprint 2-4 на `develop`.
+2. Синхронизировать production-файлы в `main`.
+3. Деплой на Masterhost.
+4. Постдеплой smoke-check.
 
 ---
 
 ## Backlog (`PENDING` от заказчика)
 
-- финальная тарифная таблица для `/price`;
-- `yandexMetrikaId`;
-- параметры Agast (`agastIframeSrc` и/или `agastHotelId`, room ids);
-- финальные фото в fixed naming;
-- `sitemap.xml` перед production-релизом.
+- Финальная тарифная таблица для `/price`.
+- `yandexMetrikaId`.
+- Параметры Agast (`agastIframeSrc` и/или `agastHotelId`).
+- Финальные фото в fixed naming.

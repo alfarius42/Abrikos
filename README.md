@@ -5,7 +5,7 @@
 ## О проекте
 
 - Production: vanilla HTML + CSS + JS (без React и сборщиков).
-- Текущая архитектура: один `index.html` + клиентский роутинг на History API.
+- Текущая архитектура: MPA (отдельные HTML-страницы и обычные ссылки).
 - Прототип: `prototype/` (только референс, код оттуда в production не копируется).
 
 ## Источники и документы
@@ -31,8 +31,8 @@
 ## Быстрый старт
 
 ```bash
-# локальный просмотр сайта (с SPA fallback)
-npx --yes serve . -s
+# локальный просмотр сайта
+npx --yes serve .
 ```
 
 ## Автотесты (Playwright)
@@ -47,8 +47,12 @@ npm test
 
 ```text
 index.html
+404.html
+rooms/              index + 1..6 + apartments
+price/              index.html
+privacy/            index.html
 css/                reset, tokens, layout, components, pages
-js/                 config, data, render, router, shell, header, booking, cookies, analytics
+js/                 config, navigation, header, booking, gallery, cookies, analytics, utils
 img/                logo и изображения
 docs/               спецификация и спринты
 tests/              Playwright e2e

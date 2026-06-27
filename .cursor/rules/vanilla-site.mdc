@@ -16,8 +16,8 @@ alwaysApply: false
 ## JavaScript
 
 - ES modules не обязательны; IIFE или `<script defer>` — как в существующих файлах
-- Роутер: History API, без перезагрузки; `popstate` + начальный `render(pathname)`
-- Данные номеров — один объект в `js/data.js`, не дублировать в HTML
+- Роутер не обязателен: MPA через обычные `<a href>` и физические HTML-страницы
+- Контент страниц хранится в HTML; JS — только интерактив и интеграции
 - Аналитика — обёртки в `js/analytics.js`; не вызывать `ym()` до согласия на cookie (если включено в config)
 
 ## HTML
@@ -35,4 +35,4 @@ alwaysApply: false
 ## Яндекс.Метрика
 
 - ID в `js/config.js` → `YANDEX_METRIKA_ID`
-- Виртуальные hit при `pushState`; цели из HANDOFF §7.3
+- Pageview при загрузке страницы; цели по событиям интерфейса

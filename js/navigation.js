@@ -1,82 +1,73 @@
 /**
- * Shared navigation helpers for shell and booking flows.
+ * Shared navigation helpers for MPA flows.
  */
 (function () {
-  let pendingBookingRoomId = null;
-  let pendingScrollTop = false;
-
   function markPendingRoom(roomId) {
     const container = document.getElementById('agast-widget-container');
     if (!container) return;
 
-    if (roomId) {
-      container.setAttribute('data-pending-room', roomId);
-    } else {
-      container.removeAttribute('data-pending-room');
-    }
+    if (roomId) container.setAttribute('data-pending-room', roomId);
+    else container.removeAttribute('data-pending-room');
   }
 
   function scrollToBookingWidget() {
-    document.getElementById('booking-widget')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('booking-widget')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function flushPendingRouteActions(pathname) {
-    if (pathname !== '/') return;
+  function initBookingWidget() {
+    const container = document.getElementById('agast-widget-container');
+    if (!container) return;
 
-    if (pendingScrollTop) {
-      pendingScrollTop = false;
-      requestAnimationFrame(scrollToTop);
+    const cfg = window.SITE_CONFIG || {};
+    if (cfg.agastIframeSrc) {
+      container.innerHTML =
+        '<iframe src="' +
+        String(cfg.agastIframeSrc) +
+        '" title="Бронирование agast.ru" loading="lazy"></iframe>';
+    }
+  }
+
+  function initHomePendingState() {
+    if (location.pathname !== '/') return;
+
+    const params = new URLSearchParams(location.search);
+    const pendingRoom = params.get('room');
+    if (pendingRoom) {
+      markPendingRoom(pendingRoom);
     }
 
-    if (pendingBookingRoomId !== null) {
-      const roomId = pendingBookingRoomId || '';
-      pendingBookingRoomId = null;
+    if (location.hash === '#booking-widget' || pendingRoom) {
       requestAnimationFrame(function () {
-        markPendingRoom(roomId);
         scrollToBookingWidget();
       });
     }
   }
 
-  document.addEventListener('routechange', function (event) {
-    flushPendingRouteActions(event.detail?.pathname || location.pathname);
+  document.addEventListener('DOMContentLoaded', function () {
+    initBookingWidget();
+    initHomePendingState();
   });
 
   window.Navigation = {
+    markPendingRoom: markPendingRoom,
     scrollToTop: scrollToTop,
     scrollToBookingWidget: scrollToBookingWidget,
-
     goHomeAndScrollTop: function () {
-      if (location.pathname === '/') {
-        scrollToTop();
-        return;
-      }
-
-      if (window.Router) {
-        pendingScrollTop = true;
-        window.Router.navigate('/');
-      } else {
-        location.href = '/';
-      }
+      if (location.pathname === '/') scrollToTop();
+      else location.href = '/';
     },
-
     goHomeAndScrollToBooking: function (roomId) {
       if (location.pathname === '/') {
         markPendingRoom(roomId || '');
         scrollToBookingWidget();
         return;
       }
-
-      if (window.Router) {
-        pendingBookingRoomId = roomId || '';
-        window.Router.navigate('/');
-      } else {
-        location.href = '/#booking-widget';
-      }
+      const roomQuery = roomId ? '?room=' + encodeURIComponent(roomId) : '';
+      location.href = '/' + roomQuery + '#booking-widget';
     },
   };
 })();

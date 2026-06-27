@@ -10,27 +10,28 @@ alwaysApply: true
 ## Стек production-сайта
 
 - **Vanilla HTML + CSS + JS** — без React, без сборщиков, без бэкенда
-- **SPA** через History API (`pushState`), одна оболочка `index.html`
+- **MPA**: отдельные HTML-страницы с чистыми URL
 - **Интеграции:** Яндекс.Метрика, виджет бронирования [agast.ru](https://agast.ru) (предпочтительно iframe)
 
 ## Структура репозитория
 
 ```
 /                 ← production-сайт (работаем здесь)
-  index.html
+  index.html  404.html
+  rooms/  price/  privacy/
   css/  js/  img/
 /prototype/       ← React-прототип из Figma Make — только референс
 ```
 
 ## Источники истины
 
-1. **Спецификация:** `prototype/guidelines/HANDOFF.md` — палитра, компоненты, роуты, метрика, чеклист
+1. **Спецификация:** `docs/SPEC.md` — архитектура, маршруты, интеграции, требования
 2. **Визуал и UX:** `prototype/src/app/App.tsx` — сверять макет и поведение
 3. **Конфиг:** `js/config.js` — телефоны, ссылки, ID счётчиков (placeholder до данных заказчика)
 
 ## Маршруты
 
-`/` · `/rooms` · `/rooms/:id` (1–6, apartments) · `/privacy`
+`/` · `/rooms` · `/rooms/:id` (1–6, apartments) · `/price` · `/privacy`
 
 ## Git
 

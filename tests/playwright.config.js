@@ -8,7 +8,7 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   webServer: {
-    command: 'npx --yes serve .. -l 4173 -s',
+    command: 'npx --yes serve .. -l 4173',
     url: 'http://127.0.0.1:4173',
     reuseExistingServer: true,
     cwd: __dirname,

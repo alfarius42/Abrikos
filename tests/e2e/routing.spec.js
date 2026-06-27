@@ -20,8 +20,8 @@ test.describe('Routing contracts — price, notFound, popstate', () => {
     await page.goto('/missing-route');
     await expect(page).toHaveURL('/missing-route');
     await expect(page.locator('.page-not-found')).toBeVisible();
-    await page.locator('.page-not-found [data-nav][href="/"]').click();
-    await expect(page).toHaveURL('/');
+    await page.locator('.page-not-found a[href="/"]').click();
+    await expect(page).toHaveURL(/\/(#booking-widget)?$/);
     await expect(page.locator('.page-header h1')).toContainText('Гостевой дом «Абрикос»');
   });
 
@@ -50,7 +50,7 @@ test.describe('Routing contracts — price, notFound, popstate', () => {
   test('header booking from /rooms navigates home and scrolls to widget', async ({ page }) => {
     await page.goto('/rooms');
     await page.locator('#btn-book').click();
-    await expect(page).toHaveURL('/');
+    await expect(page).toHaveURL(/\/(#booking-widget)?$/);
     await expect(page.locator('#booking-widget')).toBeInViewport();
   });
 });

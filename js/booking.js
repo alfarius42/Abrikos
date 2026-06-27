@@ -13,10 +13,8 @@
 
       if (window.Navigation) {
         window.Navigation.goHomeAndScrollToBooking(roomId);
-      } else if (window.Router) {
-        window.Router.navigate('/');
       } else {
-        location.href = '/#booking-widget';
+        location.href = '/?room=' + encodeURIComponent(roomId) + '#booking-widget';
       }
     },
   };

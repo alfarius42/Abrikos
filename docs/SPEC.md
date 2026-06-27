@@ -1,166 +1,145 @@
 # SPEC — source of truth
 
-**Статус:** актуализировано на Sprint 1 (частично), с пометками `PENDING` для данных заказчика и интеграций.
+**Статус:** актуально после перехода на MPA (Sprint 0.1 закрыт).
 
 ## 1) Проект и приоритет источников
 
 - Проект: сайт гостевого дома «Абрикос», Ейск, ул. Советов, д. 12.
 - Production-домен: `https://abrikos-yeisk.ru`.
 - Оператор: физическое лицо (ИНН/ОГРН на сайте не публикуются).
-- Текущая архитектура: статический сайт на vanilla HTML + CSS + JS.
+- Архитектура: многостраничный статический сайт (MPA) на vanilla HTML + CSS + JS.
 
 ### 1.1 Приоритет источников
 
-1. Этот документ (`docs/SPEC.md`).
-2. Документы проекта в `docs/` и `README.md`.
-3. Правила разработки (`.cursor/rules/*.mdc`, `AGENTS.md`) как исполняемые ограничения.
-4. `prototype/` и `prototype/guidelines/HANDOFF.md` только как референс визуала/UX, без копирования кода.
-
-При противоречии приоритет всегда выше у `SPEC.md`.
+1. `docs/SPEC.md`.
+2. Документы `docs/` и `README.md`.
+3. Правила в `.cursor/rules/*.mdc` и `AGENTS.md`.
+4. `prototype/` и `prototype/guidelines/HANDOFF.md` только как референс визуала/UX.
 
 ## 2) Технологии, ветки и архитектура
 
 ### 2.1 Технический стек
 
 - HTML5, CSS3, vanilla JS (без React/Vite/сборки для production).
-- Клиентская навигация через History API (`pushState`, `popstate`).
+- Навигация через физические страницы и обычные `<a href>`.
 - Развертывание как статика на Masterhost.
 
 ### 2.2 Git-модель и деплой
 
-- Ветка разработки: `develop` (полный репозиторий).
-- Production-ветка: `main` (только публичный сайт).
-- Подробности: `docs/BRANCHES.md`.
+- `develop` — разработка (полный репозиторий).
+- `main` — production-only (только публичный сайт).
+- Детали: `docs/BRANCHES.md`.
 
 ### 2.3 Что уходит на production
 
-В production (`main`) должны быть только:
-
 ```text
 index.html
+404.html
 .htaccess
 robots.txt
-sitemap.xml   ← PENDING (добавить перед релизом)
+sitemap.xml
+rooms/index.html
+rooms/1/index.html
+rooms/2/index.html
+rooms/3/index.html
+rooms/4/index.html
+rooms/5/index.html
+rooms/6/index.html
+rooms/apartments/index.html
+price/index.html
+privacy/index.html
 css/
 js/
 img/
 ```
 
-На production не попадают: `prototype/`, `docs/`, `.cursor/`, `tests/`, dev-артефакты.
+Не попадает в production: `prototype/`, `docs/`, `.cursor/`, `tests/`, dev-артефакты.
 
 ### 2.4 Архитектура рендера
 
-Текущая версия использует единый `index.html` и клиентский рендер в `#app-main`:
-
-| Слой | Файл(ы) | Роль |
-|------|---------|------|
-| Shell-разметка | `js/shell.js` | Header, drawer, footer |
-| Shell-поведение | `js/header.js` | Меню, scroll, CTA, телефоны |
-| Роутинг | `js/router.js` | Матчинг URL, рендер, meta/title, routechange |
-| Страницы | `js/render.js` + `js/render-*.js` | Фасад рендера и модульные рендереры home/rooms/room/price/privacy |
-| Бронирование | `js/booking.js` | Пономерный сценарий бронирования (заглушка до Sprint 3) |
+| Слой | Файлы | Роль |
+|------|-------|------|
+| Страницы | `index.html`, `rooms/**`, `price/index.html`, `privacy/index.html`, `404.html` | Статический контент маршрутов |
+| Shell-поведение | `js/header.js` | Drawer, phone dropdown, CTA, логотип/скролл |
+| Навигация и бронирование | `js/navigation.js`, `js/booking.js` | Переход на главную к виджету с `?room=` и `#booking-widget` |
+| Интерактив деталей | `js/gallery.js` | Галерея на `/rooms/:id` |
 | Интеграции | `js/analytics.js`, `js/cookies.js` | Consent и Метрика |
-| Данные | `js/config.js`, `js/data.js` | Конфиг и контент |
+| Конфиг | `js/config.js` | Контакты, соцсети, IDs интеграций |
 
-### 2.5 Маршруты
+Удалено из runtime: `js/router.js`, `js/render*.js`, `js/shell.js`, `js/data.js`.
 
-- `/` — главная.
-- `/rooms` — разводящая номеров.
-- `/rooms/:id` — детальная (`1..6`, `apartments`).
-- `/price` — прайс (контрактная страница, контент частично `PENDING`).
-- `/privacy` — политика ПД.
+### 2.5 Маршруты (URL → файл)
+
+- `/` → `index.html`
+- `/rooms` → `rooms/index.html`
+- `/rooms/1` → `rooms/1/index.html`
+- `/rooms/2` → `rooms/2/index.html`
+- `/rooms/3` → `rooms/3/index.html`
+- `/rooms/4` → `rooms/4/index.html`
+- `/rooms/5` → `rooms/5/index.html`
+- `/rooms/6` → `rooms/6/index.html`
+- `/rooms/apartments` → `rooms/apartments/index.html`
+- `/price` → `price/index.html`
+- `/privacy` → `privacy/index.html`
+- Неизвестный путь → `404.html` (через `.htaccess`)
 
 ## 3) Данные и контент
 
 ### 3.1 Конфиг (`js/config.js`)
 
-Минимальный обязательный набор:
+Обязательные поля:
 
-- `siteName`, `siteTagline`, `siteUrl`.
-- `logo.src` (текущий формат: `img/logo.png`), `logo.alt`.
-- `phones[]`, `email`, `social`.
-- `legal` (оператор как физлицо, без обязательной публикации ИНН/ОГРН).
-- `yandexMetrikaId` (`PENDING`), `metrikaRequiresConsent`.
-- `agastIframeSrc`/`agastHotelId` (`PENDING`).
+- `siteName`, `siteTagline`, `siteUrl`;
+- `phones[]`, `email`, `social`;
+- `legal`;
+- `yandexMetrikaId`, `metrikaRequiresConsent`;
+- `agastIframeSrc`, `agastHotelId`.
 
-### 3.2 Данные страниц (`js/data.js`)
+### 3.2 Контент страниц
 
-- `home`, `homeCta`, `homeBlocks`.
-- `rooms[]` — 7 категорий размещения (`1..6`, `apartments`).
-
-`rooms[]` обязательные поля:
-
-- `id`, `name`, `tagline`, `description`.
-- `area`, `capacity`, `beds`.
-- `features[]`, `price`.
-- `imageUrl`, `gallery[]`.
-- `agastRoomId` (`PENDING` до данных Agast).
-
-Примечание по контенту: в маркетинговых текстах допустима формулировка «8 номеров», при этом в данных рендера используется 7 категорий размещения.
+- Контент страниц хранится в HTML-файлах.
+- JS не используется как основной рендер страниц.
+- Маркетинговая формулировка «8 номеров» допустима при 7 категориях размещения.
 
 ## 4) UI/UX требования
 
 ### 4.1 Общие
 
 - Шрифт: Inter.
-- Токены только через `css/tokens.css`.
+- Токены: `css/tokens.css`.
 - CTA «Забронировать»: фон `#FBBF24`, текст `#0F2A5C`.
 - Mobile-first без тяжелых анимаций.
 
 ### 4.2 Обязательные блоки
 
-- Shell: header + drawer + footer.
+- Header + drawer + footer + cookie banner на всех страницах.
 - Главная: page header, 4 блока, CTA-баннер, `#booking-widget`.
-- `/rooms`: сетка карточек, площадь, цена, CTA в деталку и бронирование.
-- `/rooms/:id`: галерея, характеристики, оснащение, CTA.
-- `/price`: структура страницы по контракту (ниже).
-- `/privacy`: политика ПД + cookie banner.
+- `/rooms`: карточки категорий.
+- `/rooms/:id`: галерея, характеристики, CTA.
+- `/price`: контрактная структура с `PENDING_CONTENT`.
+- `/privacy`: политика ПД.
 
 ### 4.3 Поведение логотипа
 
 | Где клик | Поведение |
 |----------|-----------|
-| На `/` | Плавный скролл в верх страницы |
-| На другом маршруте | Переход на `/`, затем скролл в верх |
-
-Логотип не заменяет CTA бронирования.
+| На `/` | Плавный скролл вверх |
+| На других страницах | Переход на `/` |
 
 ## 5) Контракт `/price`
-
-### 5.1 Минимальная структура
 
 1. Заголовок страницы.
 2. Блок про сезонность/актуальность.
 3. Таблица тарифов.
-4. Что включено в стоимость.
-5. Доп. условия/услуги.
+4. Что включено.
+5. Доп. условия.
 6. CTA к бронированию.
 
-### 5.2 Таблица (данные `PENDING`)
-
-Колонки:
-
-- Категория.
-- Период/сезон.
-- Цена за ночь.
-- Минимальный срок (если есть).
-- Примечание.
-
-## 6) Медиа и fixed naming
+## 6) Медиа
 
 - Логотип: `img/logo.png`.
-- Фото номеров: `img/rooms/`.
-
-Базовые фиксированные имена:
-
-- `home-block-1.webp` ... `home-block-4.webp`.
-- `room-1-main.webp` ... `room-apartments-gallery-3.webp`.
-
-Рекомендации:
-
-- Основной формат: WebP (AVIF опционально).
-- Соотношение сторон: `4:3`.
-- Master-ширина: около 1600px.
+- Основной формат фото: WebP (AVIF опционально).
+- Соотношение: `4:3`.
 
 ## 7) Интеграции
 
@@ -170,15 +149,13 @@ img/
 
 - `header_book_click`
 - `room_book_click`
-- `room_view`
 - `phone_click`
-- `booking_widget_view`
 - `cookie_accept`
 
 Требования:
 
-- При `metrikaRequiresConsent = true` не отправлять события до consent.
-- Для SPA отправлять `hit` при смене маршрута.
+- До consent события не отправлять при `metrikaRequiresConsent = true`.
+- Pageview отправляется при загрузке страницы.
 
 ### 7.2 Agast
 
@@ -187,34 +164,23 @@ img/
 1. iframe (`agastIframeSrc`)
 2. fallback loader (`agastHotelId`)
 
-Два сценария:
+Сценарии:
 
-| Сценарий | Откуда | Поведение |
-|----------|--------|-----------|
-| Общий | Header CTA | Переход на `/` (если нужно) + скролл к `#booking-widget` |
-| Пономерный | Карточка/деталка/прайс | То же + контекст выбранной категории |
-
-До Sprint 3 допускается заглушка с `data-pending-room`.
+- Header CTA: переход на `/#booking-widget`.
+- Пономерный CTA: переход на `/?room=<id>#booking-widget`.
 
 ## 8) SEO и техтребования
 
-- Корректные `title` и `canonical` по маршрутам.
-- `meta description` и OG-теги допускаются как базовые до расширения per-route.
-- `robots.txt` обязателен; `sitemap.xml` — `PENDING`.
-- `.htaccess` должен обеспечивать fallback на `index.html` для History API.
+- На каждой странице заданы собственные `title`, `description`, `canonical`.
+- `robots.txt` и `sitemap.xml` обязательны.
+- `.htaccess` на MPA: `DirectoryIndex` + `ErrorDocument 404 /404.html`, без SPA-fallback.
 
 ## 9) Юридический блок и cookies
 
-- `/privacy` обязателен для оператора-физлица.
-- Cookie-banner обязателен:
-  - `accepted`/`declined` сохраняются в `localStorage`;
-  - метрика инициализируется только по правилам consent.
+- `/privacy` обязателен.
+- Cookie-banner обязателен (`accepted`/`declined` в `localStorage`).
 
 ## 10) Автотесты (Playwright)
-
-- Расположение: `tests/`.
-- Покрытие Sprint 1: shell, home, rooms, privacy/cookies.
-- Базовый запуск:
 
 ```bash
 cd tests
@@ -222,14 +188,11 @@ npm i
 npm test
 ```
 
+Тестовый контракт: реальные MPA-URL и межстраничная навигация без клиентского роутера.
+
 ## 11) Актуальный статус
 
 - Sprint 0: закрыт.
-- Sprint 1:
-  - 1.1 header/footer: закрыт;
-  - 1.2 главная: закрыт;
-  - 1.3 `/rooms`: закрыт;
-  - 1.4 `/rooms/:id`: частично;
-  - 1.5 `/price`: в работе;
-  - 1.6 privacy/cookies: закрыт.
-- Sprint 2/3/4/5: ожидают.
+- Sprint 0.1 (MPA + docs): закрыт.
+- Sprint 1: функциональная база закрыта на MPA.
+- Sprint 2/3/4/5: в очереди по roadmap.

@@ -13,7 +13,7 @@ test.describe('Sprint 1.3 — Разводящая /rooms', () => {
     await expect(page.locator('.page-header__subtitle')).toContainText('вариант размещения');
   });
 
-  test('renders seven room cards from data.js', async ({ page }) => {
+  test('renders seven room cards', async ({ page }) => {
     const cards = page.locator('.room-card');
     await expect(cards).toHaveCount(7);
     await expect(cards.nth(0)).toContainText('Номер 1');
@@ -45,14 +45,14 @@ test.describe('Sprint 1.3 — Разводящая /rooms', () => {
     page,
   }) => {
     await page.locator('.room-card').nth(1).locator('[data-room-book="2"]').click();
-    await expect(page).toHaveURL('/');
+    await expect(page).toHaveURL(/\/\?room=2#booking-widget$/);
     await expect(page.locator('#agast-widget-container')).toHaveAttribute('data-pending-room', '2');
     await expect(page.locator('#booking-widget')).toBeInViewport();
   });
 
   test('book CTA from apartments card sets correct pending room id', async ({ page }) => {
     await page.locator('.room-card').last().locator('[data-room-book="apartments"]').click();
-    await expect(page).toHaveURL('/');
+    await expect(page).toHaveURL(/\/\?room=apartments#booking-widget$/);
     await expect(page.locator('#agast-widget-container')).toHaveAttribute(
       'data-pending-room',
       'apartments'

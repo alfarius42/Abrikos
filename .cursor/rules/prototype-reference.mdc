@@ -25,8 +25,8 @@ alwaysApply: true
 | Из прототипа | В production |
 |--------------|--------------|
 | inline-стили / палитра `C.*` | CSS custom properties в `css/tokens.css` |
-| React state (страница, меню) | `js/router.js`, `js/header.js` |
-| `ROOMS`, `HOME_BLOCKS` | `js/data.js` |
-| Компоненты | функции рендера в `js/render.js` |
+| React state (страница, меню) | MPA-страницы + `js/header.js` / `js/navigation.js` |
+| `ROOMS`, `HOME_BLOCKS` | статический HTML-контент в `rooms/**` и `index.html` |
+| Компоненты | семантические секции HTML + интерактивные JS-модули |
 
 При расхождении HANDOFF и прототипа — **приоритет у HANDOFF.md**.

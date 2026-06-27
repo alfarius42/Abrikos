@@ -8,13 +8,13 @@ globs: "{index.html,robots.txt,**/*.html}"
 
 - Статический сайт без бэкенда — загрузка файлов в `public_html` (или каталог домена)
 - Домен production: **abrikos-yeisk.ru**
-- History API (SPA): нужен `.htaccess` с fallback на `index.html` для Apache, либо аналог на nginx если доступен
+- MPA: отдельные директории страниц (`rooms/`, `price/`, `privacy/`), `404.html` и чистые URL
 
 ## Ветки
 
 | Ветка | Назначение | Что выкладывать |
 |-------|------------|-----------------|
-| **main** | Production | Только `index.html`, `.htaccess`, `robots.txt`, `css/`, `js/`, `img/` |
+| **main** | Production | `index.html`, `404.html`, `.htaccess`, `robots.txt`, `sitemap.xml`, `rooms/`, `price/`, `privacy/`, `css/`, `js/`, `img/` |
 | **develop** | Dev/staging | Всё из репозитория, кроме секретов и `node_modules/` |
 
 См. `docs/BRANCHES.md`.
@@ -22,12 +22,8 @@ globs: "{index.html,robots.txt,**/*.html}"
 ## Apache (.htaccess)
 
 ```apache
-RewriteEngine On
-RewriteBase /
-RewriteRule ^index\.html$ - [L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /index.html [L]
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
 ```
 
 ## Прочее

@@ -47,7 +47,10 @@
 
   window.Analytics = {
     initIfAllowed: function () {
-      if (canTrack()) initMetrika();
+      if (canTrack()) {
+        initMetrika();
+        this.trackPage(location.pathname);
+      }
     },
 
     trackPage: function (url) {

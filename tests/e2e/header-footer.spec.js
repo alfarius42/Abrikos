@@ -49,7 +49,7 @@ test.describe('Sprint 1.1 — Header + Footer', () => {
 
   test('footer renders nav, social links and legal block', async ({ page }) => {
     await expect(page.locator('.site-footer')).toBeVisible();
-    await expect(page.locator('.site-footer__link[data-nav][href="/rooms"]')).toBeVisible();
+    await expect(page.locator('.site-footer__link[href="/rooms"]')).toBeVisible();
     await expect(page.locator('.site-footer__social-btn--vk')).toHaveAttribute(
       'href',
       'https://vk.com/abrikos_yeisk_hotel'
@@ -83,7 +83,7 @@ test.describe('Sprint 1.1 — Header + Footer', () => {
   });
 
   test('logo from another page navigates home and scrolls top', async ({ page }) => {
-    await page.locator('.site-footer__link[data-nav][href="/rooms"]').click();
+    await page.locator('.site-footer__link[href="/rooms"]').click();
     await expect(page).toHaveURL('/rooms');
     await page.evaluate(() => window.scrollTo(0, 400));
     await page.locator('#site-logo').click();

@@ -14,8 +14,13 @@
 
 ```
 index.html
+404.html
 .htaccess
 robots.txt
+sitemap.xml
+rooms/
+price/
+privacy/
 css/
 js/
 img/

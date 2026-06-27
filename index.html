@@ -26,12 +26,200 @@
   </head>
   <body>
     <div id="app">
-      <header class="site-header" id="site-header"></header>
-      <div id="site-drawer-root"></div>
+      <header class="site-header">
+        <div class="site-header__inner container">
+          <button type="button" class="site-header__burger" id="btn-menu" aria-label="Меню" aria-expanded="false" aria-controls="site-drawer">
+            ☰
+          </button>
+          <a class="site-header__logo" id="site-logo" href="/">
+            <img src="/img/logo.png" alt="Гостевой дом «Абрикос», Ейск" width="36" height="36" class="site-header__logo-img" />
+            <span class="site-header__logo-text site-header__logo-text--full">Гостевой дом «Абрикос»</span>
+            <span class="site-header__logo-text site-header__logo-text--short">Абрикос</span>
+            <span class="site-header__logo-tagline">Ейск</span>
+          </a>
+          <div class="site-header__phones">
+            <a class="site-header__phone" href="tel:+79637551055"><span>8 963 755 10 55</span></a>
+            <a class="site-header__phone" href="tel:+79057052657"><span>8 905 705 26 57</span></a>
+          </div>
+          <div class="site-header__phone-dropdown">
+            <button
+              type="button"
+              class="site-header__phone-toggle"
+              id="btn-phone-menu"
+              aria-label="Выбрать номер для звонка"
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              aria-controls="phone-menu"
+            >
+              ☎
+            </button>
+            <div class="site-header__phone-menu" id="phone-menu" role="listbox" hidden>
+              <a class="site-header__phone-menu-link" role="option" href="tel:+79637551055"><span>8 963 755 10 55</span></a>
+              <a class="site-header__phone-menu-link" role="option" href="tel:+79057052657"><span>8 905 705 26 57</span></a>
+            </div>
+          </div>
+          <button type="button" class="btn-primary site-header__cta" id="btn-book">Забронировать</button>
+        </div>
+      </header>
 
-      <main id="app-main" class="site-main"></main>
+      <div id="site-drawer-root">
+        <div class="site-drawer__overlay" id="drawer-overlay" hidden></div>
+        <aside class="site-drawer" id="site-drawer" aria-hidden="true">
+          <div class="site-drawer__head">
+            <span class="site-drawer__brand">Гостевой дом «Абрикос»</span>
+            <button type="button" class="site-drawer__close" id="btn-drawer-close" aria-label="Закрыть меню">✕</button>
+          </div>
+          <nav class="site-drawer__nav" aria-label="Основная навигация">
+            <a class="site-drawer__link" href="/">Главная <span class="site-drawer__link-arrow">›</span></a>
+            <a class="site-drawer__link" href="/rooms">Наши номера <span class="site-drawer__link-arrow">›</span></a>
+            <a class="site-drawer__link" href="/price">Прайс-лист <span class="site-drawer__link-arrow">›</span></a>
+            <a class="site-drawer__link" href="/privacy">Политика ПД <span class="site-drawer__link-arrow">›</span></a>
+          </nav>
+          <div class="site-drawer__phones">
+            <a class="site-drawer__phone" href="tel:+79637551055"><span>8 963 755 10 55</span></a>
+            <a class="site-drawer__phone" href="tel:+79057052657"><span>8 905 705 26 57</span></a>
+            <a class="site-drawer__email" href="mailto:savin@rosevent.ru"><span>savin@rosevent.ru</span></a>
+          </div>
+        </aside>
+      </div>
 
-      <footer class="site-footer" id="site-footer"></footer>
+      <main id="app-main" class="site-main">
+        <header class="page-header">
+          <div class="container">
+            <h1>Гостевой дом «Абрикос»</h1>
+            <p class="page-header__subtitle">Уютный отдых на берегу Азовского моря в Ейске — 8 номеров от стандарта до апартаментов.</p>
+          </div>
+        </header>
+
+        <div class="home-blocks">
+          <section class="home-block">
+            <div class="container">
+              <div class="home-block__grid">
+                <div class="home-block__text">
+                  <h2>Добро пожаловать в Абрикос</h2>
+                  <p>Гостевой дом «Абрикос» — в самом центре Ейска, в нескольких минутах ходьбы от Азовского моря. Тёплая атмосфера, внимательный персонал и уютные номера для настоящего отдыха.</p>
+                </div>
+                <div class="home-block__media">
+                  <div class="home-block__image-wrap">
+                    <img src="/img/home-block-1.webp" alt="Гостевой дом «Абрикос», Ейск" loading="lazy" width="900" height="675" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="home-block">
+            <div class="container">
+              <div class="home-block__grid home-block__grid--reverse">
+                <div class="home-block__text">
+                  <h2>Ейск — жемчужина Азова</h2>
+                  <p>Мягкий климат, тёплое мелководное море и свежий морской воздух. Ейск — один из самых уютных курортов юга России. От гостевого дома до пляжа — 10 минут пешком по тенистым улицам.</p>
+                </div>
+                <div class="home-block__media">
+                  <div class="home-block__image-wrap">
+                    <img src="/img/home-block-2.webp" alt="Азовское море, Ейск" loading="lazy" width="900" height="675" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="home-block">
+            <div class="container">
+              <div class="home-block__grid">
+                <div class="home-block__text">
+                  <h2>Комфорт в каждой детали</h2>
+                  <p>Кондиционер, телевизор, холодильник, бесплатный Wi-Fi — в каждом номере. Свежее бельё, мягкие полотенца, приветственный набор. Мы регулярно обновляем интерьеры, чтобы каждый заезд был лучше предыдущего.</p>
+                </div>
+                <div class="home-block__media">
+                  <div class="home-block__image-wrap">
+                    <img src="/img/home-block-3.webp" alt="Уютный номер гостевого дома" loading="lazy" width="900" height="675" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="home-block">
+            <div class="container">
+              <div class="home-block__grid home-block__grid--reverse">
+                <div class="home-block__text">
+                  <h2>Для любой компании</h2>
+                  <p>Стандартные номера для пары, семейные для детей, апартаменты с кухней для долгого отдыха. 8 вариантов размещения — найдётся подходящий для каждого. Бронируйте заранее: в сезон номера заполняются быстро.</p>
+                </div>
+                <div class="home-block__media">
+                  <div class="home-block__image-wrap">
+                    <img src="/img/home-block-4.webp" alt="Апартаменты для семьи" loading="lazy" width="900" height="675" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <section class="home-cta">
+          <div class="container">
+            <div class="home-cta__banner">
+              <div class="home-cta__copy">
+                <h2>Посмотрите наши номера</h2>
+                <p>8 вариантов размещения на любой вкус и бюджет.</p>
+              </div>
+              <a class="btn-primary home-cta__btn" href="/rooms">Все номера</a>
+            </div>
+          </div>
+        </section>
+
+        <section id="booking-widget">
+          <div class="container">
+            <h2 class="booking-widget__title">Онлайн-бронирование</h2>
+            <p class="booking-widget__lead">Выберите даты и номер — подтвердим бронирование в течение часа.</p>
+            <div id="agast-widget-container">
+              <div class="agast-placeholder">
+                <div class="agast-placeholder__icon" aria-hidden="true">🗓</div>
+                <p class="agast-placeholder__title"><strong>Виджет бронирования agast.ru</strong></p>
+                <p class="agast-placeholder__text">Здесь размещается виджет системы бронирования.<br />Укажите <code>agastIframeSrc</code> в js/config.js</p>
+                <a class="btn-primary agast-placeholder__link" href="https://agast.ru" target="_blank" rel="noopener noreferrer">Перейти к бронированию</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="site-footer__wave" aria-hidden="true">
+          <svg viewBox="0 0 1440 48" preserveAspectRatio="none">
+            <path fill="var(--color-foam)" d="M0,32 C360,0 720,48 1080,24 C1260,12 1380,36 1440,32 L1440,0 L0,0 Z"></path>
+          </svg>
+        </div>
+        <div class="site-footer__body container">
+          <div class="site-footer__grid">
+            <div class="site-footer__col">
+              <p class="site-footer__brand">Гостевой дом «Абрикос»</p>
+              <p class="site-footer__tagline">На берегу Азовского моря, Ейск</p>
+              <p class="site-footer__address">Россия, Ейск, ул. Советов, д. 12</p>
+              <a class="site-footer__email" href="mailto:savin@rosevent.ru">savin@rosevent.ru</a>
+            </div>
+            <div class="site-footer__col">
+              <p class="site-footer__label">Навигация</p>
+              <a class="site-footer__link" href="/rooms">Наши номера</a>
+              <a class="site-footer__link" href="/price">Прайс-лист</a>
+              <a class="site-footer__link" href="/privacy">Политика ПД</a>
+            </div>
+            <div class="site-footer__col">
+              <p class="site-footer__label">Соцсети</p>
+              <div class="site-footer__social">
+                <a class="site-footer__social-btn site-footer__social-btn--vk" href="https://vk.com/abrikos_yeisk_hotel" target="_blank" rel="noopener noreferrer" aria-label="ВКонтакте">ВК</a>
+                <a class="site-footer__social-btn site-footer__social-btn--tg" href="https://t.me/abrikos_yeisk_hotel" target="_blank" rel="noopener noreferrer" aria-label="Telegram">TG</a>
+                <a class="site-footer__social-btn site-footer__social-btn--max" href="https://max.ru/join/PcwYNn-KgjZOx5ikMEHi51jpMbY4C7YYBMmuiKVkWuE" target="_blank" rel="noopener noreferrer" aria-label="Max">M</a>
+              </div>
+            </div>
+          </div>
+          <div class="site-footer__bottom">
+            <p>Гостевой дом «Абрикос»</p>
+            <p>© 2026 Гостевой дом «Абрикос»</p>
+          </div>
+        </div>
+      </footer>
     </div>
 
     <div id="cookie-banner" class="cookie-banner" hidden>
@@ -46,29 +234,16 @@
       </div>
     </div>
 
-    <script src="/js/icons.js"></script>
     <script src="/js/config.js"></script>
-    <script src="/js/data.js"></script>
     <script src="/js/analytics.js"></script>
     <script src="/js/utils.js"></script>
     <script src="/js/navigation.js"></script>
-    <script src="/js/render-shared.js"></script>
-    <script src="/js/privacy-content.js"></script>
-    <script src="/js/render-home.js"></script>
-    <script src="/js/render-rooms.js"></script>
-    <script src="/js/render-room-detail.js"></script>
-    <script src="/js/render-price.js"></script>
-    <script src="/js/render-privacy.js"></script>
-    <script src="/js/render.js"></script>
     <script src="/js/booking.js"></script>
-    <script src="/js/router.js"></script>
-    <script src="/js/shell.js"></script>
     <script src="/js/header.js"></script>
     <script src="/js/cookies.js"></script>
     <script>
       document.addEventListener('DOMContentLoaded', function () {
         if (window.Analytics) window.Analytics.initIfAllowed();
-        if (window.Router) window.Router.start();
       });
     </script>
   </body>

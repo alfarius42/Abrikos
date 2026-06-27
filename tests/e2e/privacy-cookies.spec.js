@@ -34,7 +34,7 @@ test.describe('Sprint 1.6 — Privacy + cookies', () => {
       localStorage.setItem('cookie-consent', 'accepted');
     });
     await page.goto('/');
-    await page.locator('.site-footer__link[data-nav][href="/privacy"]').click();
+    await page.locator('.site-footer__link[href="/privacy"]').click();
     await expect(page).toHaveURL('/privacy');
     await expect(page).toHaveTitle(/Политика ПД/);
     await expect(page.locator('.privacy-card')).toBeVisible();

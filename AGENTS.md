@@ -28,7 +28,7 @@ npx --yes serve .
 python -m http.server 8080
 ```
 
-History API требует сервер (не `file://`).
+Для корректной проверки чистых URL нужен HTTP-сервер (не `file://`).
 
 ## Прототип (опционально)
 
@@ -40,4 +40,4 @@ cd prototype && npm i && npm run dev
 
 ## Чеклист перед деплоем
 
-См. `prototype/guidelines/HANDOFF.md` §11.
+Основной чеклист: `docs/SPEC.md` + `docs/SPRINTS.md`.
