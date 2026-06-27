@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://mc.yandex.ru; worker-src blob:; style-src 'self' https://cdn.jsdelivr.net; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://docs.google.com https://mc.yandex.ru wss://mc.yandex.ru https://cdn.jsdelivr.net https://a.tile.openstreetmap.org https://b.tile.openstreetmap.org https://c.tile.openstreetmap.org; frame-src 'self' https://agast.ru https://*.agast.ru https://yandex.ru https://*.yandex.ru; object-src 'none'; base-uri 'self'; form-action 'self'" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://mc.yandex.ru; worker-src blob:; style-src 'self' https://cdn.jsdelivr.net; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://docs.google.com https://mc.yandex.ru wss://mc.yandex.ru https://cdn.jsdelivr.net https://a.tile.openstreetmap.org https://b.tile.openstreetmap.org https://c.tile.openstreetmap.org; frame-src 'self' https://agast.ru https://*.agast.ru https://yandex.ru https://*.yandex.ru; object-src 'none'; base-uri 'self'; form-action 'self'" />
     <title>Наша территория — гостевой дом «Абрикос» в Ейске</title>
     <meta
       name="description"
@@ -21,8 +21,17 @@
     <meta name="twitter:image" content="https://abrikos-yeisk.ru/img/hero.webp" />
     <link rel="canonical" href="https://abrikos-yeisk.ru/territory" />
     <link rel="icon" href="/img/favicon-32.png" type="image/png" sizes="32x32" />
-    <link rel="apple-touch-icon" href="/img/logo.webp" />    <link rel="stylesheet" href="/css/fonts.css" />
-<link rel="stylesheet" href="/css/reset.css" />
+    <link rel="apple-touch-icon" href="/img/logo.webp" />
+
+
+
+    <link rel="preload" href="/img/hero-header.webp" as="image" type="image/webp" fetchpriority="high" />
+    <link rel="preload" href="/fonts/inter/inter-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter/inter-cyrillic-700-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter/inter-cyrillic-800-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/cormorant-garamond/cormorant-garamond-cyrillic-700-normal.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/reset.css" />
     <link rel="stylesheet" href="/css/tokens.css" />
     <link rel="stylesheet" href="/css/layout.css" />
     <link rel="stylesheet" href="/css/components.css" />
@@ -106,11 +115,12 @@
                     <img
                       class="room-detail__main-image gallery-slider__image"
                       data-gallery-main
-                      src="/img/territory-main.webp"
+                      data-src="/img/territory-main.webp"
                       alt="Зелёный двор гостевого дома «Абрикос» в Ейске"
-                      loading="eager"
-                      width="1200"
-                      height="900"
+                      loading="lazy"
+                      decoding="async"
+                      width="680"
+                      height="453"
                     />
                   </div>
                   <button type="button" class="gallery-slider__nav gallery-slider__nav--next" data-gallery-next aria-label="Следующее фото">›</button>
@@ -128,7 +138,7 @@
                     data-gallery-caption="Зелёный двор — ваш уголок тишины в центре Ейска"
                     aria-label="Фото 1: зелёный двор"
                   >
-                    <img src="/img/territory-main.webp" alt="Зелёный двор" loading="lazy" />
+                    <img data-src="/img/territory-main-thumb.webp" alt="Зелёный двор" loading="lazy" decoding="async" width="208" height="139" />
                   </button>
                   <button
                     type="button"
@@ -138,7 +148,7 @@
                     data-gallery-caption="Просторная веранда — отдых на свежем воздухе всей семьёй"
                     aria-label="Фото 2: веранда"
                   >
-                    <img src="/img/territory-gazebo.webp" alt="Веранда на территории гостевого дома" loading="lazy" />
+                    <img data-src="/img/territory-gazebo-thumb.webp" alt="Веранда на территории гостевого дома" loading="lazy" decoding="async" width="208" height="139" />
                   </button>
                   <button
                     type="button"
@@ -148,7 +158,7 @@
                     data-gallery-caption="Мангальная зона — барбекю на свежем морском воздухе"
                     aria-label="Фото 3: мангальная зона"
                   >
-                    <img src="/img/territory-bbq.webp" alt="Мангальная зона" loading="lazy" />
+                    <img data-src="/img/territory-bbq-thumb.webp" alt="Мангальная зона" loading="lazy" decoding="async" width="208" height="139" />
                   </button>
                   <button
                     type="button"
@@ -158,7 +168,7 @@
                     data-gallery-caption="Детская площадка — радость для маленьких гостей"
                     aria-label="Фото 4: детская площадка"
                   >
-                    <img src="/img/territory-playground.webp" alt="Детская площадка" loading="lazy" />
+                    <img data-src="/img/territory-playground-thumb.webp" alt="Детская площадка" loading="lazy" decoding="async" width="208" height="139" />
                   </button>
                   <button
                     type="button"
@@ -168,7 +178,7 @@
                     data-gallery-caption="Общая кухня — готовьте для всей семьи"
                     aria-label="Фото 5: общая кухня"
                   >
-                    <img src="/img/territory-kitchen.webp" alt="Общая кухня" loading="lazy" />
+                    <img data-src="/img/territory-kitchen-thumb.webp" alt="Общая кухня" loading="lazy" decoding="async" width="208" height="139" />
                   </button>
                   <button
                     type="button"
@@ -178,7 +188,7 @@
                     data-gallery-caption="Просторные балконы 2,5 м — закаты над Азовским морем"
                     aria-label="Фото 6: балконы"
                   >
-                    <img src="/img/territory-balcony.webp" alt="Просторные балконы" loading="lazy" />
+                    <img data-src="/img/territory-balcony-thumb.webp" alt="Просторные балконы" loading="lazy" decoding="async" width="208" height="139" />
                   </button>
                 </div>
               </div>

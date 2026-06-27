@@ -1022,6 +1022,8 @@
 .price-table-wrap {
   overflow-x: auto;
   margin-top: 18px;
+  /* Reserve space before prices.js hydrates tbody (CLS). */
+  min-height: 380px;
 }
 
 .price-table {
@@ -1221,6 +1223,12 @@
   width: min(100%, 680px);
   max-width: 680px;
   margin: 0 auto 40px;
+  /* Reserve space before lazy gallery images hydrate (CLS). */
+  min-height: calc(min(100vw - 32px, 680px) * 3 / 4 + 88px);
+}
+
+.territory-gallery .room-detail__thumb {
+  aspect-ratio: 4 / 3;
 }
 
 .territory-gallery .gallery-slider__stage {
@@ -1300,6 +1308,7 @@
   font-weight: 700;
   color: var(--color-navy);
   line-height: 1.4;
+  min-height: calc(1.4em * 2);
 }
 
 .gallery-slider__counter {
