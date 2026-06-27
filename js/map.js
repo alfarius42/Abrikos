@@ -1,9 +1,9 @@
 /**
- * Карта на главной: Leaflet 1.8 + OSM (лёгкая загрузка) или embed/скрин из config.
+ * Карта на главной: OpenLayers + OSM (без API-ключа) или embed/скрин из config.
  */
 (function () {
-  var LEAFLET_VERSION = '1.8.0';
-  var LEAFLET_BASE = 'https://unpkg.com/leaflet@' + LEAFLET_VERSION + '/dist/';
+  var OL_VERSION = '9.2.4';
+  var OL_BASE = 'https://cdn.jsdelivr.net/npm/ol@' + OL_VERSION + '/';
 
   function getConfig() {
     return window.SITE_CONFIG || {};
@@ -23,6 +23,13 @@
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  function toSafeUrl(rawUrl, options) {
+    if (window.SiteUtils && window.SiteUtils.toSafeUrl) {
+      return window.SiteUtils.toSafeUrl(rawUrl, options);
+    }
+    return '';
   }
 
   function buildExternalLinks(loc) {
@@ -52,20 +59,42 @@
     var cfg = getConfig();
 
     if (cfg.yandexMapEmbedSrc) {
+      var safeEmbed = toSafeUrl(cfg.yandexMapEmbedSrc, {
+        allowedHosts: ['yandex.ru', 'yandex.com', 'yastatic.net'],
+      });
+      if (!safeEmbed) return false;
+
+      var iframe = document.createElement('iframe');
+      iframe.src = safeEmbed;
+      iframe.title = 'Карта проезда - гостевой дом "Абрикос"';
+      iframe.loading = 'lazy';
+      iframe.allowFullscreen = true;
+      iframe.referrerPolicy = 'no-referrer';
+      iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
+
       container.classList.remove('is-loading');
-      container.innerHTML =
-        '<iframe src="' +
-        String(cfg.yandexMapEmbedSrc) +
-        '" title="Карта проезда — гостевой дом «Абрикос»" loading="lazy" allowfullscreen></iframe>';
+      container.textContent = '';
+      container.appendChild(iframe);
       return true;
     }
 
     if (cfg.yandexMapImageSrc) {
+      var safeImage = toSafeUrl(cfg.yandexMapImageSrc, {
+        allowHttp: false,
+      });
+      if (!safeImage) return false;
+
+      var image = document.createElement('img');
+      image.src = safeImage;
+      image.alt = 'Карта проезда - гостевой дом "Абрикос", Ейск, ул. Советов, 12';
+      image.loading = 'lazy';
+      image.width = 1200;
+      image.height = 675;
+      image.referrerPolicy = 'no-referrer';
+
       container.classList.remove('is-loading');
-      container.innerHTML =
-        '<img src="' +
-        String(cfg.yandexMapImageSrc) +
-        '" alt="Карта проезда — гостевой дом «Абрикос», Ейск, ул. Советов, 12" loading="lazy" width="1200" height="675" />';
+      container.textContent = '';
+      container.appendChild(image);
       return true;
     }
 
@@ -74,15 +103,23 @@
 
   function loadStylesheet(href) {
     return new Promise(function (resolve, reject) {
-      if (document.querySelector('link[data-leaflet-css="true"]')) {
+      if (document.querySelector('link[data-ol-css="true"]')) {
         resolve();
+        return;
+      }
+
+      var safeHref = toSafeUrl(href, { allowedHosts: ['cdn.jsdelivr.net'] });
+      if (!safeHref) {
+        reject(new Error('Invalid stylesheet URL'));
         return;
       }
 
       var link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = href;
-      link.setAttribute('data-leaflet-css', 'true');
+      link.href = safeHref;
+      link.crossOrigin = 'anonymous';
+      link.referrerPolicy = 'no-referrer';
+      link.setAttribute('data-ol-css', 'true');
       link.onload = function () {
         resolve();
       };
@@ -93,16 +130,24 @@
 
   function loadScript(src) {
     return new Promise(function (resolve, reject) {
-      if (window.L) {
-        resolve(window.L);
+      if (window.ol) {
+        resolve(window.ol);
+        return;
+      }
+
+      var safeSrc = toSafeUrl(src, { allowedHosts: ['cdn.jsdelivr.net'] });
+      if (!safeSrc) {
+        reject(new Error('Invalid script URL'));
         return;
       }
 
       var script = document.createElement('script');
-      script.src = src;
+      script.src = safeSrc;
       script.defer = true;
+      script.crossOrigin = 'anonymous';
+      script.referrerPolicy = 'no-referrer';
       script.onload = function () {
-        resolve(window.L);
+        resolve(window.ol);
       };
       script.onerror = reject;
       document.head.appendChild(script);
@@ -115,12 +160,24 @@
     container.classList.add('is-loading');
   }
 
-  function createLabelIcon(label, isHotel) {
-    return window.L.divIcon({
-      className: 'home-map-label' + (isHotel ? ' home-map-label--hotel' : ''),
-      html: '<span class="home-map-label__text">' + escapeHtml(label) + '</span>',
-      iconSize: [0, 0],
-      iconAnchor: [0, 0],
+  function refreshMapSize(map) {
+    map.updateSize();
+    requestAnimationFrame(function () {
+      map.updateSize();
+    });
+  }
+
+  function createMarkerStyle(iconSrc, isHotel) {
+    var ol = window.ol;
+    return new ol.style.Style({
+      image: new ol.style.Icon({
+        src: iconSrc,
+        anchor: isHotel ? [0.5, 1] : [0.5, 0.5],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'fraction',
+        scale: isHotel ? 0.9 : 1,
+      }),
+      zIndex: isHotel ? 2 : 1,
     });
   }
 
@@ -132,16 +189,22 @@
     pois.forEach(function (poi) {
       var item = document.createElement('li');
       var button = document.createElement('button');
+      var copy = document.createElement('span');
+      var title = document.createElement('span');
       button.type = 'button';
       button.className = 'home-map__poi-item';
       button.setAttribute('data-poi-id', poi.id);
-      button.innerHTML =
-        '<span class="home-map__poi-item-copy">' +
-        '<span class="home-map__poi-item-title">' +
-        escapeHtml(poi.mapLabel || poi.title) +
-        '</span>' +
-        (poi.hint ? '<span class="home-map__poi-item-hint">' + escapeHtml(poi.hint) + '</span>' : '') +
-        '</span>';
+      copy.className = 'home-map__poi-item-copy';
+      title.className = 'home-map__poi-item-title';
+      title.textContent = poi.mapLabel || poi.title || '';
+      copy.appendChild(title);
+      if (poi.hint) {
+        var hint = document.createElement('span');
+        hint.className = 'home-map__poi-item-hint';
+        hint.textContent = poi.hint;
+        copy.appendChild(hint);
+      }
+      button.appendChild(copy);
       button.addEventListener('click', function () {
         onSelect(poi.id);
       });
@@ -151,125 +214,277 @@
     list.dataset.ready = 'true';
   }
 
-  function renderLeafletMap(container, loc, focusPoiHandler) {
-    var L = window.L;
+  function buildFeatures(ol, loc) {
     var pois = loc.pois || [];
     var siteName = getConfig().siteName || 'Гостевой дом «Абрикос»';
-    var hotelLabel = loc.mapLabel || '«Абрикос»';
-
-    var map = L.map(container, {
-      scrollWheelZoom: false,
-      attributionControl: true,
-      zoomControl: true,
-    });
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(map);
-
-    var markers = [];
-    var markerById = {};
+    var features = [];
 
     pois.forEach(function (poi) {
-      var marker = L.marker([poi.lat, poi.lng], {
-        icon: createLabelIcon(poi.mapLabel || poi.title, false),
-      }).addTo(map);
-      markers.push(marker);
-      markerById[poi.id] = marker;
-    });
-
-    var hotelMarker = L.marker([loc.lat, loc.lng], {
-      icon: createLabelIcon(hotelLabel, true),
-      zIndexOffset: 1000,
-    }).addTo(map);
-    markers.push(hotelMarker);
-
-    if (markers.length) {
-      map.fitBounds(L.featureGroup(markers).getBounds(), {
-        padding: [28, 28],
-        maxZoom: loc.zoom || 15,
+      var feature = new ol.Feature({
+        geometry: new ol.geom.Point(ol.proj.fromLonLat([poi.lng, poi.lat])),
+        featureType: 'poi',
+        poiId: poi.id,
+        poiTitle: poi.title,
+        poiSubtitle: poi.subtitle || '',
+        poiHint: poi.hint || '',
       });
-    } else {
-      map.setView([loc.lat, loc.lng], loc.zoom || 15);
+      feature.setStyle(createMarkerStyle(poi.icon || '/img/map/poi-park.svg', false));
+      features.push(feature);
+    });
+
+    var hotelFeature = new ol.Feature({
+      geometry: new ol.geom.Point(ol.proj.fromLonLat([loc.lng, loc.lat])),
+      featureType: 'hotel',
+      poiId: 'hotel',
+      poiTitle: siteName,
+      poiSubtitle: loc.address || '',
+      poiHint: loc.hint || '',
+    });
+    hotelFeature.setStyle(createMarkerStyle(loc.mapIcon || '/img/map-marker-house.svg', true));
+    features.push(hotelFeature);
+
+    return features;
+  }
+
+  function createPopupController(popupElement, popupOverlay) {
+    function hide() {
+      popupElement.hidden = true;
+      popupElement.textContent = '';
     }
 
-    function focusPoi(poiId) {
-      var marker = markerById[poiId];
-      if (!marker) return;
-      map.setView(marker.getLatLng(), Math.max(map.getZoom(), 15), { animate: true });
-      marker.openTooltip();
+    function show(feature, coordinate) {
+      var title = feature.get('poiTitle') || '';
+      var subtitle = feature.get('poiSubtitle') || '';
+      var hint = feature.get('poiHint') || '';
+      var isHotel = feature.get('featureType') === 'hotel';
+      var body = document.createElement('div');
+      var close = document.createElement('button');
+      var titleEl = document.createElement('p');
+
+      body.className = 'home-map-popup__body';
+      titleEl.className = 'home-map-popup__title';
+      titleEl.textContent = title;
+      body.appendChild(titleEl);
+
+      if (subtitle) {
+        var subtitleEl = document.createElement('p');
+        subtitleEl.className = 'home-map-popup__subtitle';
+        subtitleEl.textContent = subtitle;
+        body.appendChild(subtitleEl);
+      }
+
+      if (hint) {
+        var hintEl = document.createElement('p');
+        hintEl.className = 'home-map-popup__hint';
+        hintEl.textContent = hint;
+        body.appendChild(hintEl);
+      }
+
+      close.type = 'button';
+      close.className = 'home-map-popup__close';
+      close.setAttribute('aria-label', 'Закрыть');
+      close.textContent = '×';
+
+      popupElement.classList.toggle('home-map-popup--hotel', isHotel);
+      popupElement.textContent = '';
+      popupElement.appendChild(body);
+      popupElement.appendChild(close);
+      popupElement.hidden = false;
+      popupOverlay.setPosition(coordinate);
+      close.addEventListener('click', hide);
     }
 
-    if (focusPoiHandler) {
-      focusPoiHandler.focus = focusPoi;
-    }
+    return {
+      hide: hide,
+      show: show,
+    };
+  }
 
-    pois.forEach(function (poi) {
-      var marker = markerById[poi.id];
-      if (!marker) return;
-      var tooltip = [poi.title, poi.subtitle, poi.hint].filter(Boolean).join(' · ');
-      marker.bindTooltip(tooltip, {
-        direction: 'top',
-        offset: [0, -4],
-        opacity: 0.95,
-        className: 'home-map-tooltip',
+  function createMapInstance(container, loc, features, popupOverlay) {
+    var ol = window.ol;
+    return new ol.Map({
+      target: container,
+      overlays: [popupOverlay],
+      controls: ol.control.defaults.defaults({
+        attribution: true,
+        zoom: true,
+        rotate: false,
+      }),
+      interactions: ol.interaction.defaults.defaults({
+        mouseWheelZoom: false,
+      }),
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM(),
+        }),
+        new ol.layer.Vector({
+          source: new ol.source.Vector({
+            features: features,
+          }),
+        }),
+      ],
+      view: new ol.View({
+        center: ol.proj.fromLonLat([loc.lng, loc.lat]),
+        zoom: loc.zoom || 15,
+        minZoom: 12,
+        maxZoom: 19,
+      }),
+    });
+  }
+
+  function fitMapView(map, loc, pois) {
+    var ol = window.ol;
+    var extentCoords = [[loc.lng, loc.lat]]
+      .concat(
+        pois.map(function (poi) {
+          return [poi.lng, poi.lat];
+        })
+      )
+      .map(function (pair) {
+        return ol.proj.fromLonLat(pair);
       });
-    });
 
-    hotelMarker.bindTooltip([siteName, loc.address, loc.hint].filter(Boolean).join(' · '), {
-      direction: 'top',
-      offset: [0, -4],
-      opacity: 0.95,
-      className: 'home-map-tooltip home-map-tooltip--hotel',
+    map.getView().fit(ol.extent.boundingExtent(extentCoords), {
+      padding: [32, 32, 32, 32],
+      maxZoom: loc.zoom || 15,
+      duration: 0,
     });
+  }
 
+  function bindMapClick(map, popup) {
+    map.on('click', function (event) {
+      var feature = map.forEachFeatureAtPixel(
+        event.pixel,
+        function (item) {
+          return item;
+        },
+        { hitTolerance: 10 }
+      );
+      if (!feature) {
+        popup.hide();
+        return;
+      }
+      popup.show(feature, event.coordinate);
+    });
+  }
+
+  function bindWheelZoom(container, map) {
     container.addEventListener(
       'wheel',
       function (event) {
         if (!container.matches(':focus-within')) return;
         event.preventDefault();
-        var delta = event.deltaY > 0 ? map.getZoom() - 1 : map.getZoom() + 1;
-        map.setZoom(delta);
+        var delta = event.deltaY > 0 ? -1 : 1;
+        var view = map.getView();
+        view.setZoom(view.getZoom() + delta);
       },
       { passive: false }
     );
+  }
+
+  function bindPointerCursor(map, container) {
+    map.on('pointermove', function (event) {
+      var hit = map.hasFeatureAtPixel(event.pixel, { hitTolerance: 10 });
+      container.style.cursor = hit ? 'pointer' : '';
+    });
+  }
+
+  function bindResizeObserver(container, map) {
+    if (!('ResizeObserver' in window)) return;
+    var resizeObserver = new ResizeObserver(function () {
+      refreshMapSize(map);
+    });
+    resizeObserver.observe(container);
+  }
+
+  function createPoiFocusHandler(map, featureById, popup) {
+    return function (poiId) {
+      var feature = featureById[poiId];
+      if (!feature) return;
+
+      var coordinate = feature.getGeometry().getCoordinates();
+      map.getView().animate({
+        center: coordinate,
+        zoom: Math.max(map.getView().getZoom(), 15),
+        duration: 350,
+      });
+      popup.show(feature, coordinate);
+    };
+  }
+
+  function renderOpenLayersMap(container, loc, focusBridge) {
+    var ol = window.ol;
+    var pois = loc.pois || [];
+    var features = buildFeatures(ol, loc);
+    var featureById = {};
+    var popupElement = document.createElement('div');
+    var popupOverlay;
+    var map;
+    var popup;
+
+    features.forEach(function (feature) {
+      var id = feature.get('poiId');
+      if (id) featureById[id] = feature;
+    });
+
+    popupElement.className = 'home-map-popup';
+    popupElement.hidden = true;
+    popupOverlay = new ol.Overlay({
+      element: popupElement,
+      positioning: 'bottom-center',
+      offset: [0, -12],
+      stopEvent: true,
+    });
+
+    map = createMapInstance(container, loc, features, popupOverlay);
+    popup = createPopupController(popupElement, popupOverlay);
+
+    if (focusBridge) {
+      focusBridge.focus = createPoiFocusHandler(map, featureById, popup);
+    }
+
+    bindMapClick(map, popup);
+    fitMapView(map, loc, pois);
+    bindWheelZoom(container, map);
+    bindPointerCursor(map, container);
+    bindResizeObserver(container, map);
 
     container.setAttribute('tabindex', '0');
     container.classList.remove('is-loading');
-
-    requestAnimationFrame(function () {
-      map.invalidateSize();
-    });
-
-    if ('ResizeObserver' in window) {
-      var resizeObserver = new ResizeObserver(function () {
-        map.invalidateSize();
-      });
-      resizeObserver.observe(container);
-    }
+    refreshMapSize(map);
 
     return map;
   }
 
   function showMapFallback(container, loc) {
+    var text = document.createElement('p');
+    var link = document.createElement('a');
+    var yandexUrl = buildExternalLinks(loc).yandex;
+
     container.classList.remove('is-loading');
     container.classList.add('home-map__canvas--fallback');
-    container.innerHTML =
-      '<p class="home-map__fallback">Карта временно недоступна. Откройте адрес во внешнем сервисе:</p>' +
-      '<a class="home-map__link" href="' +
-      buildExternalLinks(loc).yandex +
-      '" target="_blank" rel="noopener noreferrer">Яндекс.Карты</a>';
+    container.textContent = '';
+
+    text.className = 'home-map__fallback';
+    text.textContent = 'Карта временно недоступна. Откройте адрес во внешнем сервисе:';
+    link.className = 'home-map__link';
+    link.href = yandexUrl;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'Яндекс.Карты';
+
+    container.appendChild(text);
+    container.appendChild(link);
   }
 
-  function startMap(container, loc, focusPoiHandler) {
+  function startMap(container, loc, focusBridge) {
     if (container.dataset.mapReady === 'true') return;
     container.dataset.mapReady = 'true';
     prepareMapContainer(container);
 
-    Promise.all([loadStylesheet(LEAFLET_BASE + 'leaflet.css'), loadScript(LEAFLET_BASE + 'leaflet.js')])
+    Promise.all([loadStylesheet(OL_BASE + 'ol.css'), loadScript(OL_BASE + 'dist/ol.js')])
       .then(function () {
-        renderLeafletMap(container, loc, focusPoiHandler);
+        renderOpenLayersMap(container, loc, focusBridge);
       })
       .catch(function () {
         showMapFallback(container, loc);
@@ -318,5 +533,17 @@
     }
   }
 
-  document.addEventListener('DOMContentLoaded', initHomeMap);
+  function scheduleInitHomeMap() {
+    var run = function () {
+      initHomeMap();
+    };
+
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(run, { timeout: 1500 });
+    } else {
+      setTimeout(run, 200);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', scheduleInitHomeMap);
 })();

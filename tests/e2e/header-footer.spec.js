@@ -8,14 +8,29 @@ test.describe('Sprint 1.1 — Header + Footer', () => {
     await page.goto('/');
   });
 
-  test('header renders logo, phones and book CTA from config', async ({ page }) => {
+  test('header renders logo, phone dropdown and book CTA', async ({ page }) => {
     await expect(page.locator('.site-header')).toBeVisible();
-    await expect(page.locator('.site-header__logo-img')).toHaveAttribute('src', /logo\.png/);
+    await expect(page.locator('.site-header__logo-img')).toHaveAttribute('src', /logo\.webp/);
     await expect(page.locator('.site-header__logo-text--full')).toContainText('Гостевой дом «Абрикос»');
     await expect(page.locator('.site-header__logo-tagline')).toContainText('Ейск');
     await expect(page.locator('.site-header__logo-tagline')).not.toContainText('гостевой дом');
-    await expect(page.locator('.site-header__phone')).toHaveCount(2);
+    await expect(page.locator('.site-header__phones')).toBeHidden();
+    await expect(page.locator('#btn-phone-menu')).toBeVisible();
+    await page.locator('#btn-phone-menu').click();
+    await expect(page.locator('.site-header__phone-menu-link')).toHaveCount(2);
     await expect(page.locator('#btn-book')).toContainText('Забронировать');
+  });
+
+  test('desktop header opens phone dropdown with both numbers', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await expect(page.locator('.site-header__phones')).toBeHidden();
+    await expect(page.locator('#btn-phone-menu')).toBeVisible();
+    await page.locator('#btn-phone-menu').click();
+    await expect(page.locator('#phone-menu')).toBeVisible();
+    const links = page.locator('.site-header__phone-menu-link');
+    await expect(links).toHaveCount(2);
+    await expect(links.nth(0)).toHaveAttribute('href', 'tel:+79637551055');
+    await expect(links.nth(1)).toHaveAttribute('href', 'tel:+79057052657');
   });
 
   test('mobile header shows short brand name and logo', async ({ page }) => {
@@ -23,7 +38,7 @@ test.describe('Sprint 1.1 — Header + Footer', () => {
     await expect(page.locator('.site-header__logo-text--short')).toBeVisible();
     await expect(page.locator('.site-header__logo-text--short')).toHaveText('Абрикос');
     await expect(page.locator('.site-header__logo-text--full')).toBeHidden();
-    await expect(page.locator('.site-header__logo-img')).toHaveAttribute('src', /logo\.png/);
+    await expect(page.locator('.site-header__logo-img')).toHaveAttribute('src', /logo\.webp/);
   });
 
   test('mobile header opens phone dropdown with clickable numbers', async ({ page }) => {

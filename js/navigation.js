@@ -23,11 +23,21 @@
     if (!container) return;
 
     const cfg = window.SITE_CONFIG || {};
-    if (cfg.agastIframeSrc) {
-      container.innerHTML =
-        '<iframe src="' +
-        String(cfg.agastIframeSrc) +
-        '" title="Бронирование agast.ru" loading="lazy"></iframe>';
+    if (cfg.agastIframeSrc && window.SiteUtils && window.SiteUtils.toSafeUrl) {
+      const safeSrc = window.SiteUtils.toSafeUrl(cfg.agastIframeSrc, {
+        allowedHosts: ['agast.ru'],
+      });
+      if (!safeSrc) return;
+
+      const iframe = document.createElement('iframe');
+      iframe.src = safeSrc;
+      iframe.title = 'Бронирование agast.ru';
+      iframe.loading = 'lazy';
+      iframe.referrerPolicy = 'no-referrer';
+      iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups');
+
+      container.textContent = '';
+      container.appendChild(iframe);
     }
   }
 

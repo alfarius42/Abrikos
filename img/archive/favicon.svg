@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Абрикос">
-  <rect width="32" height="32" rx="8" fill="#0F2A5C"/>
-  <ellipse cx="16" cy="18" rx="8" ry="9" fill="#FBBF24"/>
-  <path d="M16 9 Q19 6 22 5" stroke="#FFFFFF" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-  <ellipse cx="21" cy="6.5" rx="2.5" ry="1.2" fill="#10B981" transform="rotate(-25 21 6.5)"/>
-</svg>

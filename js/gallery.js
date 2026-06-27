@@ -1,26 +1,131 @@
 /**
- * Room detail gallery interactions for static pages.
+ * Gallery interactions for room detail and territory pages.
+ * Supports thumb switching and optional slider (prev/next, captions, keyboard).
  */
 (function () {
+  function getSlides(root) {
+    return Array.prototype.slice
+      .call(root.querySelectorAll('[data-gallery-thumb]'))
+      .map(function (thumb) {
+        return {
+          src: thumb.getAttribute('data-target-image'),
+          alt: thumb.querySelector('img') ? thumb.querySelector('img').getAttribute('alt') || '' : '',
+          caption: thumb.getAttribute('data-gallery-caption') || '',
+          thumb: thumb,
+        };
+      })
+      .filter(function (slide) {
+        return Boolean(slide.src);
+      });
+  }
+
   function bindGallery(root) {
-    const mainImage = root.querySelector('[data-gallery-main]');
+    var mainImage = root.querySelector('[data-gallery-main]');
     if (!mainImage) return;
 
-    root.querySelectorAll('[data-gallery-thumb]').forEach(function (thumb) {
-      thumb.addEventListener('click', function () {
-        const nextSrc = thumb.getAttribute('data-target-image');
-        if (!nextSrc) return;
+    var captionEl = root.querySelector('[data-gallery-caption]');
+    var counterEl = root.querySelector('[data-gallery-counter]');
+    var prevBtn = root.querySelector('[data-gallery-prev]');
+    var nextBtn = root.querySelector('[data-gallery-next]');
+    var slides = getSlides(root);
+    var currentIndex = 0;
+    var isSlider = root.hasAttribute('data-gallery-slider');
 
-        mainImage.setAttribute('src', nextSrc);
-        root.querySelectorAll('[data-gallery-thumb]').forEach(function (item) {
-          item.classList.remove('is-active');
-        });
-        thumb.classList.add('is-active');
+    function findIndexByThumb(thumb) {
+      for (var i = 0; i < slides.length; i += 1) {
+        if (slides[i].thumb === thumb) return i;
+      }
+      return 0;
+    }
+
+    function findActiveIndex() {
+      var active = root.querySelector('[data-gallery-thumb].is-active');
+      return active ? findIndexByThumb(active) : 0;
+    }
+
+    function setActiveThumb(index) {
+      slides.forEach(function (slide, i) {
+        slide.thumb.classList.toggle('is-active', i === index);
       });
+    }
+
+    function goTo(index) {
+      if (!slides.length) return;
+
+      currentIndex = (index + slides.length) % slides.length;
+      var slide = slides[currentIndex];
+
+      mainImage.setAttribute('src', slide.src);
+      if (slide.alt) mainImage.setAttribute('alt', slide.alt);
+      if (captionEl) captionEl.textContent = slide.caption;
+      if (counterEl) counterEl.textContent = currentIndex + 1 + ' / ' + slides.length;
+      setActiveThumb(currentIndex);
+    }
+
+    slides.forEach(function (slide, index) {
+      slide.thumb.addEventListener('click', function () {
+        goTo(index);
+      });
+    });
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function () {
+        goTo(currentIndex - 1);
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function () {
+        goTo(currentIndex + 1);
+      });
+    }
+
+    if (isSlider) {
+      root.addEventListener('keydown', function (event) {
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          goTo(currentIndex - 1);
+        }
+        if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          goTo(currentIndex + 1);
+        }
+      });
+
+      root.setAttribute('tabindex', '0');
+    }
+
+    currentIndex = findActiveIndex();
+    if (isSlider && slides.length) {
+      goTo(currentIndex);
+    }
+  }
+
+  function initGalleries() {
+    var roots = Array.prototype.slice.call(document.querySelectorAll('[data-gallery-root]'));
+    if (!roots.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+      roots.forEach(bindGallery);
+      return;
+    }
+
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var root = entry.target;
+          observer.unobserve(root);
+          bindGallery(root);
+        });
+      },
+      { rootMargin: '240px 0px' }
+    );
+
+    roots.forEach(function (root) {
+      observer.observe(root);
     });
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('[data-gallery-root]').forEach(bindGallery);
-  });
+  document.addEventListener('DOMContentLoaded', initGalleries);
 })();

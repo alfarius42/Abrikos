@@ -9,10 +9,12 @@
 | 0 | Документация и подготовка | Закрыт |
 | 0.1 | Миграция на MPA + синхронизация docs | Закрыт |
 | 1 | Верстка и базовая логика | Закрыт |
-| 2 | Яндекс.Метрика | Ожидает данных |
+| 2 | Яндекс.Метрика | Закрыт (код) |
 | 3 | Agast интеграция | Ожидает данных |
-| 4 | Тестирование и стабилизация | В работе |
+| 4 | Итоговое тестирование | Ожидает |
 | 5 | Релиз и деплой | Ожидает |
+
+**Итого:** функциональная база сайта готова. До production остаются подключение Agast, финальный QA и деплой.
 
 ---
 
@@ -37,6 +39,8 @@
   - `/rooms/index.html`
   - `/rooms/1..6/index.html`
   - `/rooms/apartments/index.html`
+  - `/rooms/kuban-house/index.html`
+  - `/territory/index.html`
   - `/price/index.html`
   - `/privacy/index.html`
   - `/404.html`
@@ -68,6 +72,7 @@
 - [x] Sticky header, drawer, CTA, телефоны.
 - [x] Footer с навигацией, соцссылками и контактами.
 - [x] Логотип: на `/` скролл вверх, на других страницах переход на `/`.
+- [x] Пункт «Наша территория» в навигации.
 
 ### 1.2 Главная
 
@@ -75,40 +80,56 @@
 - [x] 4 шахматных блока.
 - [x] CTA-баннер.
 - [x] `#booking-widget` и `#agast-widget-container`.
+- [x] SEO-блок (текст + структурированные данные).
+- [x] Интерактивная карта OpenLayers с POI (пляж, парк, дельфинарий, аквапарк, рынок, вокзал).
 
 ### 1.3 `/rooms`
 
-- [x] 7 карточек категорий.
-- [x] Площадь, цена, переходы в деталки.
+- [x] 8 карточек категорий (`1..6`, `apartments`, `kuban-house`).
+- [x] Площадь, цена «от …», переходы в деталки.
 - [x] CTA бронирования категории.
+- [x] Локальные WebP-фото вместо placeholder.
 
 ### 1.4 `/rooms/:id`
 
-- [x] Все 7 детальных страниц (`1..6`, `apartments`).
+- [x] Все 8 детальных страниц.
 - [x] Галерея thumbs/main.
 - [x] Характеристики и оснащение.
 - [x] CTA бронирования категории.
 
-### 1.5 `/price`
+### 1.5 `/territory`
+
+- [x] Галерея территории (6 фото).
+- [x] Список удобств на территории.
+
+### 1.6 `/price`
 
 - [x] Структура страницы по контракту.
-- [x] Таблица категорий.
-- [x] Маркер `PENDING_CONTENT` для финальных тарифов.
+- [x] Таблица категорий с тарифами 2026.
+- [x] Загрузка актуальных цен из Google Sheets (`js/prices.js`) с fallback в `config.js`.
 
-### 1.6 `/privacy` + cookies
+### 1.7 `/privacy` + cookies
 
 - [x] Политика ПД.
 - [x] Cookie-banner с сохранением consent.
+
+### 1.8 SEO и медиа
+
+- [x] Уникальные `title`, `description`, `canonical`, OG на всех страницах.
+- [x] `js/seo.js` — хлебные крошки и JSON-LD.
+- [x] `sitemap.xml` со всеми маршрутами.
+- [x] Логотип и favicon: `img/logo.webp`, `img/favicon-32.webp`.
 
 ---
 
 ## Sprint 2 — Яндекс.Метрика
 
-**Статус:** ожидает `yandexMetrikaId`.
+**Статус:** закрыт (код готов, smoke на production — в Sprint 4).
 
-- [ ] Заполнить ID в `js/config.js`.
-- [ ] Проверить pageview и цели: `header_book_click`, `room_book_click`, `phone_click`, `cookie_accept`.
-- [ ] Проверить, что до consent события не уходят при `metrikaRequiresConsent = true`.
+- [x] ID в `js/config.js` (`88914059`).
+- [x] Цели: `header_book_click`, `room_book_click`, `phone_click`, `cookie_accept`.
+- [x] До consent события не уходят при `metrikaRequiresConsent = true`.
+- [x] Pageview при загрузке страницы через `js/bootstrap.js`.
 
 ---
 
@@ -123,9 +144,9 @@
 
 ---
 
-## Sprint 4 — Тестирование и стабилизация
+## Sprint 4 — Итоговое тестирование
 
-**Статус:** в работе.
+**Статус:** ожидает.
 
 ### Автотесты (Playwright)
 
@@ -139,16 +160,16 @@
 
 План:
 
-- [ ] Расширить проверку `/404` и SEO-мета.
-- [ ] Добавить детальные проверки для `/rooms/:id` (галерея/характеристики).
-- [ ] Добавить smoke по `/price` и бронированию с query/hash.
+- [ ] Прогнать полный набор e2e на `develop`.
+- [ ] Расширить проверку `/404`, `/territory`, `/rooms/kuban-house` и SEO-мета.
+- [ ] Smoke по `/price` и бронированию с query/hash.
 
 ### Ручной QA перед релизом
 
-- [ ] URL: `/`, `/rooms`, `/rooms/:id`, `/price`, `/privacy`, `404`.
+- [ ] URL: `/`, `/rooms`, `/rooms/:id`, `/territory`, `/price`, `/privacy`, `404`.
 - [ ] Адаптивность (iOS Safari, Android Chrome).
 - [ ] SEO: `title`, `canonical`, `robots`, `sitemap`.
-- [ ] Smoke Метрики и Agast.
+- [ ] Smoke Метрики и Agast на production-домене.
 
 ---
 
@@ -156,7 +177,7 @@
 
 **Статус:** ожидает.
 
-1. Закрыть Sprint 2-4 на `develop`.
+1. Закрыть Sprint 3–4 на `develop`.
 2. Синхронизировать production-файлы в `main`.
 3. Деплой на Masterhost.
 4. Постдеплой smoke-check.
@@ -165,7 +186,4 @@
 
 ## Backlog (`PENDING` от заказчика)
 
-- Финальная тарифная таблица для `/price`.
-- `yandexMetrikaId`.
 - Параметры Agast (`agastIframeSrc` и/или `agastHotelId`).
-- Финальные фото в fixed naming.

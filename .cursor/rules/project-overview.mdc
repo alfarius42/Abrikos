@@ -31,7 +31,11 @@ alwaysApply: true
 
 ## Маршруты
 
-`/` · `/rooms` · `/rooms/:id` (1–6, apartments) · `/price` · `/privacy`
+`/` · `/rooms` · `/rooms/:id` (1–6, apartments, kuban-house) · `/territory` · `/price` · `/privacy`
+
+## Статус
+
+Функциональная база готова. До production: Agast, итоговое тестирование, деплой (`docs/SPRINTS.md`).
 
 ## Git
 

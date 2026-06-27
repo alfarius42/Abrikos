@@ -3,6 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+      (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js', 'ym');
+
+      ym(88914059, 'init', {webvisor:true, clickmap:true, referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/88914059" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://mc.yandex.ru; worker-src blob:; style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://docs.google.com https://mc.yandex.ru wss://mc.yandex.ru https://cdn.jsdelivr.net https://a.tile.openstreetmap.org https://b.tile.openstreetmap.org https://c.tile.openstreetmap.org; frame-src 'self' https://agast.ru https://*.agast.ru https://yandex.ru https://*.yandex.ru; object-src 'none'; base-uri 'self'; form-action 'self'"
+    />
     <title>Гостевой дом «Абрикос» в Ейске — семейный отдых у Азовского моря</title>
     <meta
       name="description"
@@ -10,12 +28,20 @@
     />
     <meta property="og:title" content="Гостевой дом «Абрикос» в Ейске — семейный отдых у моря" />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://abrikos-yeisk.ru/" />
+    <meta property="og:description" content="Семейный гостевой дом «Абрикос» в Ейске — жильё рядом с Азовским морем, 5 минут до пляжа. Тихий отдых с детьми и животными, просторные балконы, зелёный двор. Онлайн-бронирование." />
+    <meta property="og:image" content="https://abrikos-yeisk.ru/img/hero.webp" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Гостевой дом «Абрикос» в Ейске — семейный отдых у Азовского моря" />
+    <meta name="twitter:description" content="Семейный гостевой дом «Абрикос» в Ейске — жильё рядом с Азовским морем, 5 минут до пляжа. Тихий отдых с детьми и животными, просторные балконы, зелёный двор. Онлайн-бронирование." />
+    <meta name="twitter:image" content="https://abrikos-yeisk.ru/img/hero.webp" />
     <link rel="canonical" href="https://abrikos-yeisk.ru/" />
-    <link rel="icon" href="/img/logo.png" type="image/png" sizes="any" />
-    <link rel="apple-touch-icon" href="/img/logo.png" />
+    <link rel="icon" href="/img/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/img/logo.webp" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="dns-prefetch" href="https://unpkg.com" />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
     <link rel="dns-prefetch" href="https://a.tile.openstreetmap.org" />
     <link rel="dns-prefetch" href="https://b.tile.openstreetmap.org" />
     <link rel="dns-prefetch" href="https://c.tile.openstreetmap.org" />
@@ -29,7 +55,7 @@
     <link rel="stylesheet" href="/css/components.css" />
     <link rel="stylesheet" href="/css/pages.css" />
   </head>
-  <body>
+  <body data-page="home">
     <div id="app">
       <header class="site-header">
         <div class="site-header__inner container">
@@ -37,7 +63,7 @@
             ☰
           </button>
           <a class="site-header__logo" id="site-logo" href="/">
-            <img src="/img/logo.png" alt="Гостевой дом «Абрикос», Ейск" width="36" height="36" class="site-header__logo-img" />
+            <img src="/img/logo.webp" alt="Гостевой дом «Абрикос», Ейск" width="36" height="36" class="site-header__logo-img" />
             <span class="site-header__logo-text site-header__logo-text--full">Гостевой дом «Абрикос»</span>
             <span class="site-header__logo-text site-header__logo-text--short">Абрикос</span>
             <span class="site-header__logo-tagline">Ейск</span>
@@ -56,7 +82,7 @@
               aria-haspopup="listbox"
               aria-controls="phone-menu"
             >
-              ☎
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             </button>
             <div class="site-header__phone-menu" id="phone-menu" role="listbox" hidden>
               <a class="site-header__phone-menu-link" role="option" href="tel:+79637551055"><span>8 963 755 10 55</span></a>
@@ -77,6 +103,7 @@
           <nav class="site-drawer__nav" aria-label="Основная навигация">
             <a class="site-drawer__link" href="/">Главная <span class="site-drawer__link-arrow">›</span></a>
             <a class="site-drawer__link" href="/rooms">Наши номера <span class="site-drawer__link-arrow">›</span></a>
+            <a class="site-drawer__link" href="/territory">Наша территория <span class="site-drawer__link-arrow">›</span></a>
             <a class="site-drawer__link" href="/price">Прайс-лист <span class="site-drawer__link-arrow">›</span></a>
             <a class="site-drawer__link" href="/privacy">Политика ПД <span class="site-drawer__link-arrow">›</span></a>
           </nav>
@@ -218,7 +245,7 @@
               <div id="home-map-canvas" class="home-map__canvas" role="region" aria-label="Интерактивная карта расположения гостевого дома"></div>
             </div>
 
-            <p class="home-map__poi-note">На карте — гостевой дом и основные точки Ейска. Нажмите плашку или пункт списка.</p>
+            <p class="home-map__poi-note">На карте — гостевой дом и основные точки Ейска. Нажмите значок или пункт списка.</p>
             <ul class="home-map__poi-legend" id="home-map-poi-legend" aria-label="Объекты на карте"></ul>
           </div>
         </section>
@@ -256,6 +283,7 @@
             <div class="site-footer__col">
               <p class="site-footer__label">Навигация</p>
               <a class="site-footer__link" href="/rooms">Наши номера</a>
+              <a class="site-footer__link" href="/territory">Наша территория</a>
               <a class="site-footer__link" href="/price">Прайс-лист</a>
               <a class="site-footer__link" href="/privacy">Политика ПД</a>
             </div>
@@ -289,6 +317,7 @@
     </div>
 
     <script src="/js/config.js"></script>
+    <script src="/js/seo.js"></script>
     <script src="/js/analytics.js"></script>
     <script src="/js/utils.js"></script>
     <script src="/js/navigation.js"></script>
@@ -296,10 +325,6 @@
     <script src="/js/map.js"></script>
     <script src="/js/header.js"></script>
     <script src="/js/cookies.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        if (window.Analytics) window.Analytics.initIfAllowed();
-      });
-    </script>
+    <script src="/js/bootstrap.js"></script>
   </body>
 </html>

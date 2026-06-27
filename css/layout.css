@@ -1,5 +1,7 @@
 /* Layout: header, footer, drawer, page shell */
 
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&display=swap');
+
 #app {
   min-height: 100vh;
   display: flex;
@@ -80,6 +82,14 @@ body.drawer-open {
   cursor: pointer;
   text-align: left;
   color: var(--color-white);
+  text-decoration: none;
+}
+
+.site-header__logo:hover,
+.site-header__logo:focus,
+.site-header__logo:visited {
+  color: var(--color-white);
+  text-decoration: none;
 }
 
 .site-header__logo-img {
@@ -91,30 +101,38 @@ body.drawer-open {
 }
 
 .site-header__logo-text {
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
+  font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  font-size: 22px;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-decoration: none;
 }
 
 .site-header__logo-text--short {
   display: none;
+  font-style: normal;
+  letter-spacing: 0.04em;
 }
 
 .site-header__logo-tagline {
-  font-size: 14px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.82);
-  margin-left: 4px;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+  margin-left: 2px;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 .site-header__phones {
-  display: flex;
-  align-items: center;
-  gap: 22px;
+  display: none;
 }
 
 .site-header__phone {
@@ -134,13 +152,13 @@ body.drawer-open {
 
 .site-header__phone-dropdown {
   position: relative;
-  display: none;
+  display: block;
   flex-shrink: 0;
 }
 
 .site-header__phone-toggle {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -149,12 +167,18 @@ body.drawer-open {
   border-radius: 10px;
   color: var(--color-white);
   cursor: pointer;
-  transition: background 150ms ease;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.site-header__phone-toggle svg {
+  display: block;
+  flex-shrink: 0;
 }
 
 .site-header__phone-toggle:hover,
 .site-header__phone-toggle.is-open {
   background: rgba(255, 255, 255, 0.25);
+  color: var(--color-sun);
 }
 
 .site-header__phone-menu {
@@ -202,14 +226,9 @@ body.drawer-open {
 }
 
 @media (max-width: 760px) {
-  .site-header__phones,
   .site-header__logo-tagline,
   .site-header__logo-text--full {
     display: none;
-  }
-
-  .site-header__phone-dropdown {
-    display: block;
   }
 
   .site-header__logo-text--short {
@@ -218,10 +237,15 @@ body.drawer-open {
 
   .site-header__logo-text {
     max-width: none;
-    font-size: 17px;
+    font-size: 20px;
   }
 
   .site-header__logo-img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .site-header__phone-toggle {
     width: 40px;
     height: 40px;
   }

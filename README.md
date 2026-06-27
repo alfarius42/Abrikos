@@ -8,10 +8,13 @@
 - Текущая архитектура: MPA (отдельные HTML-страницы и обычные ссылки).
 - Прототип: `prototype/` (только референс, код оттуда в production не копируется).
 
+**Статус:** функциональная база готова. До production — подключение Agast, итоговое тестирование и деплой. Подробнее: [docs/SPRINTS.md](docs/SPRINTS.md).
+
 ## Источники и документы
 
 - Спецификация: [docs/SPEC.md](docs/SPEC.md)
 - Дорожная карта: [docs/SPRINTS.md](docs/SPRINTS.md)
+- Медиа: [docs/MEDIA.md](docs/MEDIA.md)
 - Модель веток и деплой: [docs/BRANCHES.md](docs/BRANCHES.md)
 - Референс прототипа: [prototype/guidelines/HANDOFF.md](prototype/guidelines/HANDOFF.md)
 
@@ -48,14 +51,16 @@ npm test
 ```text
 index.html
 404.html
-rooms/              index + 1..6 + apartments
+rooms/              index + 1..6 + apartments + kuban-house
+territory/          index.html
 price/              index.html
 privacy/            index.html
 css/                reset, tokens, layout, components, pages
-js/                 config, navigation, header, booking, gallery, cookies, analytics, utils
-img/                logo и изображения
+js/                 config, navigation, header, booking, gallery, map, prices, seo, cookies, analytics, bootstrap, utils
+img/                logo, favicon, rooms, territory, map POI
 docs/               спецификация и спринты
 tests/              Playwright e2e
+scripts/            dev-скрипты патча HTML
 prototype/          референс из Figma Make
 ```
 
@@ -63,10 +68,11 @@ prototype/          референс из Figma Make
 
 Ключевые данные задаются в `js/config.js`:
 
-- контакты и соцсети;
-- `siteUrl`;
+- контакты, соцсети, навигация;
+- `siteUrl`, карта и POI (`location`);
+- тарифы 2026 (`prices`, `pricesSheet`);
 - ID Яндекс.Метрики (`yandexMetrikaId`);
-- параметры Agast (`agastIframeSrc`, `agastHotelId`).
+- параметры Agast (`agastIframeSrc`, `agastHotelId`) — **ещё не заполнены**.
 
 ## Полезное
 
