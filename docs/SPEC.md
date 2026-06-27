@@ -137,7 +137,8 @@ img/
 
 ## 6) Медиа
 
-- Логотип: `img/logo.png`.
+- Логотип: `img/logo.png` (header), favicon: `img/favicon.svg` + `img/logo.png`.
+- Карта файлов: `docs/MEDIA.md`.
 - Основной формат фото: WebP (AVIF опционально).
 - Соотношение: `4:3`.
 
