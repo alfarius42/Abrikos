@@ -3,7 +3,7 @@
 .page-header {
   background:
     linear-gradient(180deg, rgba(12, 28, 52, 0.78) 0%, rgba(12, 28, 52, 0.52) 100%),
-    url('/img/hero.webp') center center / cover no-repeat;
+    url('/img/hero-header.webp') center center / cover no-repeat;
   margin-top: calc(-1 * var(--header-height));
   padding: 100px 16px 40px;
   border-bottom: 4px solid var(--color-sun);
