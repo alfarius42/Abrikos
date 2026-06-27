@@ -10,15 +10,31 @@ test.describe('Sprint 1.2 — Главная', () => {
 
   test('page header shows guest house title and subtitle', async ({ page }) => {
     await expect(page.locator('.page-header h1')).toContainText('Гостевой дом «Абрикос»');
+    await expect(page.locator('.page-header h1')).toContainText('Ейск');
     await expect(page.locator('.page-header__subtitle')).toContainText('8 номеров');
+    await expect(page.locator('.page-header__subtitle')).toContainText('5 минут');
     await expect(page.locator('.page-header__subtitle')).not.toContainText('мини-отель');
+  });
+
+  test('page has exactly one h1 and valid heading hierarchy', async ({ page }) => {
+    await expect(page.locator('main h1')).toHaveCount(1);
+    await expect(page.locator('main h1')).toContainText('Гостевой дом «Абрикос» в Ейске');
+
+    await expect(page.locator('#home-highlights-title')).toHaveCount(1);
+    await expect(page.locator('.home-block__text h3')).toHaveCount(4);
+    await expect(page.locator('main h2')).toHaveCount(4);
+    await expect(page.locator('#home-about-title')).toBeVisible();
+    await expect(page.locator('#home-map-title')).toBeVisible();
+    await expect(page.locator('#booking-widget-title')).toBeVisible();
+    await expect(page.locator('.home-about h3')).toHaveCount(2);
   });
 
   test('renders four chess blocks from data', async ({ page }) => {
     const blocks = page.locator('.home-block');
     await expect(blocks).toHaveCount(4);
-    await expect(blocks.nth(0)).toContainText('Добро пожаловать в Абрикос');
-    await expect(blocks.nth(0)).toContainText('Гостевой дом «Абрикос»');
+    await expect(blocks.nth(0)).toContainText('Добро пожаловать в «Абрикос»');
+    await expect(blocks.nth(0).locator('h3')).toContainText('Добро пожаловать');
+    await expect(blocks.nth(0)).toContainText('5 минут');
     await expect(blocks.nth(3)).toContainText('8 вариантов размещения');
   });
 
@@ -33,6 +49,17 @@ test.describe('Sprint 1.2 — Главная', () => {
     );
   });
 
+  test('about section with amenities appears before map', async ({ page }) => {
+    await expect(page.locator('#about')).toBeVisible();
+    await expect(page.locator('#home-about-title')).toContainText('О гостевом доме');
+    await expect(page.locator('.home-about__amenities')).toContainText('Можно с животными');
+    await expect(page.locator('.home-about__terms')).toContainText('3 суток');
+
+    const aboutBox = await page.locator('#about').boundingBox();
+    const mapBox = await page.locator('#location').boundingBox();
+    expect(aboutBox.y).toBeLessThan(mapBox.y);
+  });
+
   test('map section appears before booking widget with external links', async ({ page }) => {
     await expect(page.locator('#location')).toBeVisible();
     await expect(page.locator('#home-map-title')).toContainText('Как нас найти');
@@ -40,6 +67,16 @@ test.describe('Sprint 1.2 — Главная', () => {
     await expect(page.locator('#home-map-canvas')).toBeVisible();
     await expect(page.locator('#home-map-link-yandex')).toHaveAttribute('href', /yandex\.ru\/maps/);
     await expect(page.locator('#home-map-link-2gis')).toHaveAttribute('href', /2gis\.ru/);
+    await expect(page.locator('#home-map-poi-legend')).toContainText('Пляж «Каменка»');
+    await expect(page.locator('#home-map-poi-legend')).toContainText('Ж/д вокзал');
+    await expect(page.locator('.home-map__panel')).toBeVisible();
+    await expect(page.locator('.home-map__panel #home-map-canvas')).toBeVisible();
+
+    const mapPanel = page.locator('.home-map__panel');
+    const agastPanel = page.locator('#agast-widget-container');
+    const mapPanelBox = await mapPanel.boundingBox();
+    const agastPanelBox = await agastPanel.boundingBox();
+    expect(Math.abs(mapPanelBox.width - agastPanelBox.width)).toBeLessThan(4);
 
     const mapBox = await page.locator('#location').boundingBox();
     const bookingBox = await page.locator('#booking-widget').boundingBox();

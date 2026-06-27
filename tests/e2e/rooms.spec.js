@@ -23,7 +23,7 @@ test.describe('Sprint 1.3 — Разводящая /rooms', () => {
 
   test('each card shows area badge and price', async ({ page }) => {
     await expect(page.locator('.room-card').nth(0).locator('.room-card__area')).toHaveText('18 м²');
-    await expect(page.locator('.room-card').nth(0).locator('.room-card__price')).toContainText('3 500');
+    await expect(page.locator('.room-card').nth(0).locator('.room-card__price')).toContainText('3 000');
     await expect(page.locator('.room-card').nth(5).locator('.room-card__area')).toHaveText('24 м²');
     await expect(page.locator('.room-card').nth(6).locator('.room-card__area')).toHaveText('45 м²');
   });

@@ -13,6 +13,9 @@ test.describe('Routing contracts — price, notFound, popstate', () => {
     await expect(page.locator('.page-header h1')).toContainText('Прайс');
     await expect(page.locator('.price-page')).toBeVisible();
     await expect(page.locator('.price-table')).toBeVisible();
+    await expect(page.locator('#price-table-body tr')).toHaveCount(8);
+    await expect(page.locator('#price-table-body')).toContainText('Кубанский дом');
+    await expect(page.locator('#price-table-body')).toContainText('5 500 ₽');
     await expect(page.locator('.page-not-found')).toHaveCount(0);
   });
 
@@ -23,6 +26,7 @@ test.describe('Routing contracts — price, notFound, popstate', () => {
     await page.locator('.page-not-found a[href="/"]').click();
     await expect(page).toHaveURL(/\/(#booking-widget)?$/);
     await expect(page.locator('.page-header h1')).toContainText('Гостевой дом «Абрикос»');
+    await expect(page.locator('.page-header h1')).toContainText('Ейск');
   });
 
   test('popstate works for browser back/forward', async ({ page }) => {

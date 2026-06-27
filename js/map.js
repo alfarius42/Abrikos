@@ -1,10 +1,9 @@
 /**
- * Карта на главной: OpenLayers + OpenStreetMap (без API-ключа) или embed/скрин из config.
+ * Карта на главной: Leaflet 1.8 + OSM (лёгкая загрузка) или embed/скрин из config.
  */
 (function () {
-  var OL_VERSION = '9.2.4';
-  var OL_BASE = 'https://cdn.jsdelivr.net/npm/ol@' + OL_VERSION + '/';
-  var MARKER_SRC = '/img/map-marker-house.svg';
+  var LEAFLET_VERSION = '1.8.0';
+  var LEAFLET_BASE = 'https://unpkg.com/leaflet@' + LEAFLET_VERSION + '/dist/';
 
   function getConfig() {
     return window.SITE_CONFIG || {};
@@ -13,6 +12,17 @@
   function getLocationConfig() {
     var cfg = getConfig();
     return cfg.location || null;
+  }
+
+  function escapeHtml(value) {
+    if (window.SiteUtils && window.SiteUtils.escapeHtml) {
+      return window.SiteUtils.escapeHtml(value);
+    }
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   }
 
   function buildExternalLinks(loc) {
@@ -42,6 +52,7 @@
     var cfg = getConfig();
 
     if (cfg.yandexMapEmbedSrc) {
+      container.classList.remove('is-loading');
       container.innerHTML =
         '<iframe src="' +
         String(cfg.yandexMapEmbedSrc) +
@@ -50,6 +61,7 @@
     }
 
     if (cfg.yandexMapImageSrc) {
+      container.classList.remove('is-loading');
       container.innerHTML =
         '<img src="' +
         String(cfg.yandexMapImageSrc) +
@@ -62,7 +74,7 @@
 
   function loadStylesheet(href) {
     return new Promise(function (resolve, reject) {
-      if (document.querySelector('link[data-ol-css="true"]')) {
+      if (document.querySelector('link[data-leaflet-css="true"]')) {
         resolve();
         return;
       }
@@ -70,7 +82,7 @@
       var link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = href;
-      link.setAttribute('data-ol-css', 'true');
+      link.setAttribute('data-leaflet-css', 'true');
       link.onload = function () {
         resolve();
       };
@@ -81,8 +93,8 @@
 
   function loadScript(src) {
     return new Promise(function (resolve, reject) {
-      if (window.ol) {
-        resolve(window.ol);
+      if (window.L) {
+        resolve(window.L);
         return;
       }
 
@@ -90,7 +102,7 @@
       script.src = src;
       script.defer = true;
       script.onload = function () {
-        resolve(window.ol);
+        resolve(window.L);
       };
       script.onerror = reject;
       document.head.appendChild(script);
@@ -98,66 +110,118 @@
   }
 
   function prepareMapContainer(container) {
-    var width = container.offsetWidth || container.parentElement?.offsetWidth || 0;
-    if (width > 0) {
-      container.style.height = Math.round((width * 3) / 4) + 'px';
+    container.style.height = '380px';
+    container.style.minHeight = '380px';
+    container.classList.add('is-loading');
+  }
+
+  function createLabelIcon(label, isHotel) {
+    return window.L.divIcon({
+      className: 'home-map-label' + (isHotel ? ' home-map-label--hotel' : ''),
+      html: '<span class="home-map-label__text">' + escapeHtml(label) + '</span>',
+      iconSize: [0, 0],
+      iconAnchor: [0, 0],
+    });
+  }
+
+  function buildLegend(pois, onSelect) {
+    var list = document.getElementById('home-map-poi-legend');
+    if (!list || !pois || !pois.length || list.dataset.ready === 'true') return;
+
+    list.innerHTML = '';
+    pois.forEach(function (poi) {
+      var item = document.createElement('li');
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'home-map__poi-item';
+      button.setAttribute('data-poi-id', poi.id);
+      button.innerHTML =
+        '<span class="home-map__poi-item-copy">' +
+        '<span class="home-map__poi-item-title">' +
+        escapeHtml(poi.mapLabel || poi.title) +
+        '</span>' +
+        (poi.hint ? '<span class="home-map__poi-item-hint">' + escapeHtml(poi.hint) + '</span>' : '') +
+        '</span>';
+      button.addEventListener('click', function () {
+        onSelect(poi.id);
+      });
+      item.appendChild(button);
+      list.appendChild(item);
+    });
+    list.dataset.ready = 'true';
+  }
+
+  function renderLeafletMap(container, loc, focusPoiHandler) {
+    var L = window.L;
+    var pois = loc.pois || [];
+    var siteName = getConfig().siteName || 'Гостевой дом «Абрикос»';
+    var hotelLabel = loc.mapLabel || '«Абрикос»';
+
+    var map = L.map(container, {
+      scrollWheelZoom: false,
+      attributionControl: true,
+      zoomControl: true,
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+
+    var markers = [];
+    var markerById = {};
+
+    pois.forEach(function (poi) {
+      var marker = L.marker([poi.lat, poi.lng], {
+        icon: createLabelIcon(poi.mapLabel || poi.title, false),
+      }).addTo(map);
+      markers.push(marker);
+      markerById[poi.id] = marker;
+    });
+
+    var hotelMarker = L.marker([loc.lat, loc.lng], {
+      icon: createLabelIcon(hotelLabel, true),
+      zIndexOffset: 1000,
+    }).addTo(map);
+    markers.push(hotelMarker);
+
+    if (markers.length) {
+      map.fitBounds(L.featureGroup(markers).getBounds(), {
+        padding: [28, 28],
+        maxZoom: loc.zoom || 15,
+      });
     } else {
-      container.style.minHeight = '280px';
+      map.setView([loc.lat, loc.lng], loc.zoom || 15);
     }
-  }
 
-  function refreshMapSize(map) {
-    map.updateSize();
-    requestAnimationFrame(function () {
-      map.updateSize();
+    function focusPoi(poiId) {
+      var marker = markerById[poiId];
+      if (!marker) return;
+      map.setView(marker.getLatLng(), Math.max(map.getZoom(), 15), { animate: true });
+      marker.openTooltip();
+    }
+
+    if (focusPoiHandler) {
+      focusPoiHandler.focus = focusPoi;
+    }
+
+    pois.forEach(function (poi) {
+      var marker = markerById[poi.id];
+      if (!marker) return;
+      var tooltip = [poi.title, poi.subtitle, poi.hint].filter(Boolean).join(' · ');
+      marker.bindTooltip(tooltip, {
+        direction: 'top',
+        offset: [0, -4],
+        opacity: 0.95,
+        className: 'home-map-tooltip',
+      });
     });
-  }
 
-  function renderOpenLayersMap(container, loc) {
-    var ol = window.ol;
-    var center = ol.proj.fromLonLat([loc.lng, loc.lat]);
-
-    var markerFeature = new ol.Feature({
-      geometry: new ol.geom.Point(center),
-      name: getConfig().siteName || 'Гостевой дом «Абрикос»',
-    });
-
-    markerFeature.setStyle(
-      new ol.style.Style({
-        image: new ol.style.Icon({
-          anchor: [0.5, 1],
-          src: MARKER_SRC,
-          scale: 1,
-        }),
-      })
-    );
-
-    var map = new ol.Map({
-      target: container,
-      controls: ol.control.defaults.defaults({
-        attribution: true,
-        zoom: true,
-        rotate: false,
-      }),
-      interactions: ol.interaction.defaults.defaults({
-        mouseWheelZoom: false,
-      }),
-      layers: [
-        new ol.layer.Tile({
-          source: new ol.source.OSM(),
-        }),
-        new ol.layer.Vector({
-          source: new ol.source.Vector({
-            features: [markerFeature],
-          }),
-        }),
-      ],
-      view: new ol.View({
-        center: center,
-        zoom: loc.zoom || 16,
-        minZoom: 12,
-        maxZoom: 19,
-      }),
+    hotelMarker.bindTooltip([siteName, loc.address, loc.hint].filter(Boolean).join(' · '), {
+      direction: 'top',
+      offset: [0, -4],
+      opacity: 0.95,
+      className: 'home-map-tooltip home-map-tooltip--hotel',
     });
 
     container.addEventListener(
@@ -165,19 +229,22 @@
       function (event) {
         if (!container.matches(':focus-within')) return;
         event.preventDefault();
-        var delta = event.deltaY > 0 ? -1 : 1;
-        var view = map.getView();
-        view.setZoom(view.getZoom() + delta);
+        var delta = event.deltaY > 0 ? map.getZoom() - 1 : map.getZoom() + 1;
+        map.setZoom(delta);
       },
       { passive: false }
     );
 
     container.setAttribute('tabindex', '0');
-    refreshMapSize(map);
+    container.classList.remove('is-loading');
+
+    requestAnimationFrame(function () {
+      map.invalidateSize();
+    });
 
     if ('ResizeObserver' in window) {
       var resizeObserver = new ResizeObserver(function () {
-        refreshMapSize(map);
+        map.invalidateSize();
       });
       resizeObserver.observe(container);
     }
@@ -186,12 +253,27 @@
   }
 
   function showMapFallback(container, loc) {
+    container.classList.remove('is-loading');
     container.classList.add('home-map__canvas--fallback');
     container.innerHTML =
       '<p class="home-map__fallback">Карта временно недоступна. Откройте адрес во внешнем сервисе:</p>' +
       '<a class="home-map__link" href="' +
       buildExternalLinks(loc).yandex +
       '" target="_blank" rel="noopener noreferrer">Яндекс.Карты</a>';
+  }
+
+  function startMap(container, loc, focusPoiHandler) {
+    if (container.dataset.mapReady === 'true') return;
+    container.dataset.mapReady = 'true';
+    prepareMapContainer(container);
+
+    Promise.all([loadStylesheet(LEAFLET_BASE + 'leaflet.css'), loadScript(LEAFLET_BASE + 'leaflet.js')])
+      .then(function () {
+        renderLeafletMap(container, loc, focusPoiHandler);
+      })
+      .catch(function () {
+        showMapFallback(container, loc);
+      });
   }
 
   function initHomeMap() {
@@ -203,19 +285,37 @@
 
     setExternalLinks(loc);
 
+    var focusBridge = { focus: function () {} };
+    buildLegend(loc.pois || [], function (poiId) {
+      focusBridge.focus(poiId);
+      container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (container.dataset.mapReady !== 'true') {
+        startMap(container, loc, focusBridge);
+      }
+    });
+
     if (renderConfiguredMap(container)) {
       return;
     }
 
-    prepareMapContainer(container);
-
-    Promise.all([loadStylesheet(OL_BASE + 'ol.css'), loadScript(OL_BASE + 'dist/ol.js')])
-      .then(function () {
-        renderOpenLayersMap(container, loc);
-      })
-      .catch(function () {
-        showMapFallback(container, loc);
-      });
+    if ('IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(
+        function (entries) {
+          if (
+            entries.some(function (entry) {
+              return entry.isIntersecting;
+            })
+          ) {
+            observer.disconnect();
+            startMap(container, loc, focusBridge);
+          }
+        },
+        { rootMargin: '160px 0px' }
+      );
+      observer.observe(container);
+    } else {
+      startMap(container, loc, focusBridge);
+    }
   }
 
   document.addEventListener('DOMContentLoaded', initHomeMap);
