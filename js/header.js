@@ -73,7 +73,7 @@
     });
   }
 
-  function showPhoneCopyToast(text) {
+  function showCopyToast(message) {
     var toast = document.getElementById('phone-copy-toast');
     if (!toast) {
       toast = document.createElement('div');
@@ -84,7 +84,7 @@
       document.body.appendChild(toast);
     }
 
-    toast.textContent = 'Номер скопирован: ' + text;
+    toast.textContent = message;
     toast.hidden = false;
     toast.classList.add('is-visible');
     clearTimeout(copyToastTimer);
@@ -92,6 +92,38 @@
       toast.classList.remove('is-visible');
       toast.hidden = true;
     }, 2500);
+  }
+
+  function showPhoneCopyToast(text) {
+    showCopyToast('Номер скопирован: ' + text);
+  }
+
+  function getEmailAddress(el) {
+    var href = el.getAttribute('href') || '';
+    if (href.toLowerCase().indexOf('mailto:') === 0) {
+      return decodeURIComponent(href.slice(7).split('?')[0]).trim();
+    }
+    return getPhoneDisplayText(el);
+  }
+
+  function showEmailCopyToast(text) {
+    showCopyToast('Адрес скопирован: ' + text);
+  }
+
+  function tryOpenMailto(href, onFallback) {
+    var mailLaunched = false;
+
+    function onBlur() {
+      mailLaunched = true;
+    }
+
+    window.addEventListener('blur', onBlur, { once: true });
+    window.location.href = href;
+
+    setTimeout(function () {
+      window.removeEventListener('blur', onBlur);
+      if (!mailLaunched) onFallback();
+    }, 500);
   }
 
   function bindShellEvents() {
@@ -175,8 +207,25 @@
     });
 
     document.querySelectorAll('a[href^="mailto:"]').forEach(function (el) {
-      el.addEventListener('click', function () {
+      el.addEventListener('click', function (e) {
         if (window.Analytics) window.Analytics.reachGoal('email_click');
+
+        if (isMobilePhoneLink()) return;
+
+        e.preventDefault();
+        var href = el.getAttribute('href') || '';
+        var address = getEmailAddress(el);
+        var display = getPhoneDisplayText(el) || address;
+
+        tryOpenMailto(href, function () {
+          copyPhoneText(address || display)
+            .then(function () {
+              showEmailCopyToast(display || address);
+            })
+            .catch(function () {
+              showEmailCopyToast(display || address);
+            });
+        });
       });
     });
 
