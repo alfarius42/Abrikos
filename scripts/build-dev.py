@@ -8,6 +8,7 @@ price/, privacy/, css/, js/, img/, fonts/
 """
 from __future__ import annotations
 
+import platform
 import shutil
 import subprocess
 import sys
@@ -36,6 +37,8 @@ COPY_PATHS = (
 
 def run(cmd: list[str]) -> None:
     print("+", " ".join(cmd))
+    if platform.system() == "Windows" and cmd and cmd[0] == "npx":
+        cmd = ["npx.cmd", *cmd[1:]]
     subprocess.run(cmd, cwd=ROOT, check=True)
 
 
