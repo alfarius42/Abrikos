@@ -72,12 +72,6 @@ test.describe('Sprint 1.2 — Главная', () => {
     await expect(page.locator('.home-map__panel')).toBeVisible();
     await expect(page.locator('.home-map__panel #home-map-canvas')).toBeVisible();
 
-    const mapPanel = page.locator('.home-map__panel');
-    const agastPanel = page.locator('#agast-widget-container');
-    const mapPanelBox = await mapPanel.boundingBox();
-    const agastPanelBox = await agastPanel.boundingBox();
-    expect(Math.abs(mapPanelBox.width - agastPanelBox.width)).toBeLessThan(4);
-
     const mapBox = await page.locator('#location').boundingBox();
     const bookingBox = await page.locator('#booking-widget').boundingBox();
     expect(mapBox.y).toBeLessThan(bookingBox.y);
@@ -97,10 +91,21 @@ test.describe('Sprint 1.2 — Главная', () => {
     expect(secondMedia.x).toBeLessThan(secondText.x);
   });
 
-  test('booking section has required ids and placeholder', async ({ page }) => {
+  test('booking section opens Agast in new tab without URL in HTML', async ({ page, context }) => {
     await expect(page.locator('#booking-widget')).toBeVisible();
-    await expect(page.locator('#agast-widget-container')).toBeVisible();
-    await expect(page.locator('.agast-placeholder')).toContainText('agast.ru');
+    await expect(page.locator('#btn-booking-open')).toBeVisible();
+    await expect(page.locator('#agast-widget-container')).toBeHidden();
+
+    const html = await page.content();
+    expect(html).not.toContain('booking-online.agast.ru');
+    expect(html).not.toContain('hms_system_id');
+
+    const popupPromise = context.waitForEvent('page');
+    await page.locator('#btn-booking-open').click();
+    const popup = await popupPromise;
+
+    await expect(popup).toHaveURL(/booking-online\.agast\.ru\/booking\/rooms$/);
+    await popup.close();
   });
 
   test('mobile layout puts text before image in content blocks', async ({ page }) => {

@@ -85,9 +85,13 @@ test.describe('Sprint 1.1 — Header + Footer', () => {
     await expect(page.locator('#site-drawer')).not.toHaveClass(/is-open/);
   });
 
-  test('book CTA scrolls to booking widget on home', async ({ page }) => {
+  test('book CTA opens Agast from header on home', async ({ page, context }) => {
+    const popupPromise = context.waitForEvent('page');
     await page.locator('#btn-book').click();
-    await expect(page.locator('#booking-widget')).toBeInViewport();
+    const popup = await popupPromise;
+
+    await expect(popup).toHaveURL(/booking-online\.agast\.ru\/booking\/rooms$/);
+    await popup.close();
   });
 
   test('logo on home scrolls to top', async ({ page }) => {

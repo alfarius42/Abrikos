@@ -201,11 +201,12 @@
         button.textContent = 'Забронировать';
         actionCell.appendChild(button);
       } else {
-        var link = document.createElement('a');
-        link.className = 'price-table__book';
-        link.href = '/#booking-widget';
-        link.textContent = 'Забронировать';
-        actionCell.appendChild(link);
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'price-table__book';
+        button.setAttribute('data-action', 'book');
+        button.textContent = 'Забронировать';
+        actionCell.appendChild(button);
       }
       row.appendChild(actionCell);
 

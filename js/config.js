@@ -133,11 +133,13 @@ window.SITE_CONFIG = {
   metrikaRequiresConsent: true,
 
   /**
-   * agast.ru — iframe из ЛК или loader.js.
-   * Указать src iframe или hotel ID когда будет от agast.
+   * agast.ru — переход по ссылке с кнопки «Забронировать».
+   * openMode: link — новая вкладка (рекомендация поддержки); iframe — встраивание (Agast редиректит, в iframe часто «Welcome!»).
+   * paramStyle: compact — hms_system_id=6931; spaced — hms_system_id= 6931.
    */
-  agastIframeSrc: '',
-  agastHotelId: '',
+  agastSystemId: 6931,
+  agastOpenMode: 'link',
+  agastParamStyle: 'compact',
 
   /**
    * Яндекс.Карты — iframe embed или статичный скрин.

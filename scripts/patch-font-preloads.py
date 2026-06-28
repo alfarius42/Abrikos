@@ -42,10 +42,11 @@ PAGE_HEADER_PAGES = {
 }
 
 FONT_PRELOADS = """\
+    <link rel="preload" href="/fonts/cormorant-garamond/cormorant-garamond-cyrillic-600-italic.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/cormorant-garamond/cormorant-garamond-cyrillic-700-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/inter/inter-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/inter/inter-cyrillic-700-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/inter/inter-cyrillic-800-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/cormorant-garamond/cormorant-garamond-cyrillic-700-normal.woff2" as="font" type="font/woff2" crossorigin />
 """
 
 HERO_PRELOAD = """\
@@ -53,7 +54,7 @@ HERO_PRELOAD = """\
 """
 
 REMOVE_OLD = re.compile(
-    r'\s*<link rel="preload" href="/(?:img/hero-header\.webp|fonts/inter/inter-cyrillic-(?:400|700|800)-normal\.woff2|fonts/cormorant-garamond/cormorant-garamond-cyrillic-700-normal\.woff2)"[^>]*(?:/>|></link>)\s*',
+    r'\s*<link rel="preload" href="/(?:img/hero-header\.webp|fonts/inter/inter-cyrillic-(?:400|700|800)-normal\.woff2|fonts/cormorant-garamond/cormorant-garamond-cyrillic-(?:600-italic|700-normal)\.woff2)"[^>]*(?:/>|></link>)\s*',
 )
 
 

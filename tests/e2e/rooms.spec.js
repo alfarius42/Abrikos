@@ -47,21 +47,21 @@ test.describe('Sprint 1.3 — Разводящая /rooms', () => {
     await expect(page.locator('.page-header h1')).toContainText('Апартаменты');
   });
 
-  test('book CTA stub navigates home and marks pending room (Sprint 3 placeholder)', async ({
-    page,
-  }) => {
+  test('book CTA opens Agast booking in new tab', async ({ page, context }) => {
+    const popupPromise = context.waitForEvent('page');
     await page.locator('.room-card').nth(1).locator('[data-room-book="2"]').click();
-    await expect(page).toHaveURL(/\/\?room=2#booking-widget$/);
-    await expect(page.locator('#agast-widget-container')).toHaveAttribute('data-pending-room', '2');
-    await expect(page.locator('#booking-widget')).toBeInViewport();
+    const popup = await popupPromise;
+
+    await expect(popup).toHaveURL(/booking-online\.agast\.ru\/booking\/rooms$/);
+    await popup.close();
   });
 
-  test('book CTA from apartments card sets correct pending room id', async ({ page }) => {
+  test('book CTA from apartments card opens Agast booking', async ({ page, context }) => {
+    const popupPromise = context.waitForEvent('page');
     await page.locator('.room-card').nth(6).locator('[data-room-book="apartments"]').click();
-    await expect(page).toHaveURL(/\/\?room=apartments#booking-widget$/);
-    await expect(page.locator('#agast-widget-container')).toHaveAttribute(
-      'data-pending-room',
-      'apartments'
-    );
+    const popup = await popupPromise;
+
+    await expect(popup).toHaveURL(/booking-online\.agast\.ru\/booking\/rooms$/);
+    await popup.close();
   });
 });

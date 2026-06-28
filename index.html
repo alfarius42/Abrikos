@@ -29,11 +29,16 @@
     <link rel="dns-prefetch" href="https://a.tile.openstreetmap.org" />
     <link rel="dns-prefetch" href="https://b.tile.openstreetmap.org" />
     <link rel="dns-prefetch" href="https://c.tile.openstreetmap.org" />
-        <link rel="preload" href="/img/hero-header.webp" as="image" type="image/webp" fetchpriority="high" />
+
+
+
+
+    <link rel="preload" href="/img/hero-header.webp" as="image" type="image/webp" fetchpriority="high" />
+    <link rel="preload" href="/fonts/cormorant-garamond/cormorant-garamond-cyrillic-600-italic.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/cormorant-garamond/cormorant-garamond-cyrillic-700-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/inter/inter-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/inter/inter-cyrillic-700-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/inter/inter-cyrillic-800-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/cormorant-garamond/cormorant-garamond-cyrillic-700-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="/css/fonts.css" />
     <link rel="stylesheet" href="/css/reset.css" />
     <link rel="stylesheet" href="/css/tokens.css" />
@@ -50,9 +55,8 @@
           </button>
           <a class="site-header__logo" id="site-logo" href="/">
             <img src="/img/logo-header.webp" alt="Гостевой дом «Абрикос», Ейск" width="36" height="36" class="site-header__logo-img" />
-            <span class="site-header__logo-text site-header__logo-text--full">Гостевой дом «Абрикос»</span>
+            <span class="site-header__logo-text site-header__logo-text--full">Гостевой дом «Абрикос»<span class="site-header__logo-tagline"> · Ейск</span></span>
             <span class="site-header__logo-text site-header__logo-text--short">Абрикос</span>
-            <span class="site-header__logo-tagline">Ейск</span>
           </a>
           <div class="site-header__phones">
             <a class="site-header__phone" href="tel:+79637551055"><span>8 963 755 10 55</span></a>
@@ -240,14 +244,10 @@
           <div class="container">
             <h2 id="booking-widget-title" class="booking-widget__title">Онлайн-бронирование номеров</h2>
             <p class="booking-widget__lead">Выберите даты и номер — подтвердим бронирование в течение часа.</p>
-            <div id="agast-widget-container">
-              <div class="agast-placeholder">
-                <div class="agast-placeholder__icon" aria-hidden="true">🗓</div>
-                <p class="agast-placeholder__title"><strong>Виджет бронирования agast.ru</strong></p>
-                <p class="agast-placeholder__text">Здесь размещается виджет системы бронирования.<br />Укажите <code>agastIframeSrc</code> в js/config.js</p>
-                <a class="btn-primary agast-placeholder__link" href="https://agast.ru" target="_blank" rel="noopener noreferrer">Перейти к бронированию</a>
-              </div>
+            <div class="booking-widget__cta">
+              <button type="button" class="btn-primary" id="btn-booking-open">Забронировать</button>
             </div>
+            <div id="agast-widget-container" class="is-empty" hidden aria-live="polite"></div>
           </div>
         </section>
       </main>

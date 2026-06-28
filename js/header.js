@@ -90,15 +90,8 @@
       closeDrawer();
       closePhoneMenu();
 
-      if (location.pathname !== '/') {
-        if (window.Navigation) window.Navigation.goHomeAndScrollToBooking('');
-        else location.href = '/#booking-widget';
-      } else {
-        if (window.Navigation) {
-          window.Navigation.scrollToBookingWidget();
-        } else {
-          document.getElementById('booking-widget')?.scrollIntoView({ behavior: 'smooth' });
-        }
+      if (window.Booking) {
+        window.Booking.activateBooking();
       }
     });
 

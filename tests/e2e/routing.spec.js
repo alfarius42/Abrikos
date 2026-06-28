@@ -52,10 +52,14 @@ test.describe('Routing contracts — price, notFound, popstate', () => {
     await expect(page.locator('.rooms-grid')).toBeVisible();
   });
 
-  test('header booking from /rooms navigates home and scrolls to widget', async ({ page }) => {
+  test('header booking from /rooms opens Agast in new tab', async ({ page, context }) => {
     await page.goto('/rooms');
+    const popupPromise = context.waitForEvent('page');
     await page.locator('#btn-book').click();
-    await expect(page).toHaveURL(/\/(#booking-widget)?$/);
-    await expect(page.locator('#booking-widget')).toBeInViewport();
+    const popup = await popupPromise;
+
+    await expect(popup).toHaveURL(/booking-online\.agast\.ru\/booking\/rooms$/);
+    await expect(page).toHaveURL('/rooms');
+    await popup.close();
   });
 });
