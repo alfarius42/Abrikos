@@ -151,39 +151,38 @@ window.SITE_CONFIG = {
 
   /**
    * Google Таблица с тарифами — публичный CSV (gviz), без Google API и бэкенда.
-   * Таблица: https://docs.google.com/spreadsheets/d/1ua_mQpuyxFk-7u1nrn85hUGfAIVYO5G5_vR_4kwauoM
    * Доступ: «Просмотр для всех, у кого есть ссылка» (или шире).
+   * spreadsheetRef — base64 ID (не plaintext в config); URL запроса всё равно виден в Network.
    *
-   * Раскладка ячеек (как в Google Sheets):
-   *   A1 — год; A2 пусто, B2:F2 — месяцы; A3:A10 — категории, B3:F10 — цены за ночь (₽).
+   * Раскладка (только эти ячейки): A1 — год; B2:F2 — месяцы; A3:F10 — строки (A название, B… цены).
    */
   pricesSheet: {
     enabled: true,
-    spreadsheetId: '1ua_mQpuyxFk-7u1nrn85hUGfAIVYO5G5_vR_4kwauoM',
+    spreadsheetRef: 'MXVhX21RcHV5eEZrLTd1MW5ybjg1aFVHZkFJVllPNVc1X3JSXzRrd2F1bzA=',
     gid: 0,
     layout: {
       yearCell: 'A1',
-      headerRow: 2,
-      dataRange: 'A2:F10',
+      monthsRange: 'B2:F2',
+      dataRange: 'A3:F10',
     },
   },
 
   /**
-   * Fallback-тарифы и соответствие строк таблице (sheetLabel / sheetRow).
-   * priceFrom — минимум для карточек «от … ₽/ночь»; пересчитывается из таблицы при загрузке.
+   * Fallback до загрузки таблицы. Порядок categories[] = строки dataRange (1-я строка → 1-я категория).
+   * bookId — только для кнопки «Забронировать» на деталках; названия и цены берутся из ячеек таблицы.
    */
   prices: {
     year: 2026,
     months: ['Май', 'Июнь', 'Июль', 'Август', 'Сентябрь'],
     categories: [
-      { bookId: '1', name: 'Номер 1', sheetLabel: 'Номер 1', sheetRow: 3, rates: [3000, 5000, 5500, 5500, 3000], priceFrom: 3000 },
-      { bookId: '2', name: 'Номер 2', sheetLabel: 'Номер 2', sheetRow: 4, rates: [3000, 5000, 5500, 5500, 3000], priceFrom: 3000 },
-      { bookId: '3', name: 'Номер 3', sheetLabel: 'Номер 3', sheetRow: 5, rates: [3500, 5500, 6000, 6000, 3500], priceFrom: 3500 },
-      { bookId: '4', name: 'Номер 4', sheetLabel: 'Номер 4', sheetRow: 6, rates: [3000, 5000, 5500, 5500, 3000], priceFrom: 3000 },
-      { bookId: '5', name: 'Номер 5', sheetLabel: 'Номер 5', sheetRow: 7, rates: [2500, 3500, 4000, 4000, 3000], priceFrom: 2500 },
-      { bookId: '6', name: 'Номер 6', sheetLabel: 'Номер 6', sheetRow: 8, rates: [3000, 5000, 5500, 5500, 3000], priceFrom: 3000 },
-      { bookId: 'apartments', name: 'Апартаменты', sheetLabel: 'Апартаменты', sheetRow: 9, rates: [5900, 7900, 8900, 8900, 5900], priceFrom: 5900 },
-      { bookId: 'kuban-house', name: 'Кубанский дом', sheetLabel: 'Кубанский дом', sheetRow: 10, rates: [4900, 6900, 7900, 7900, 4900], priceFrom: 4900 },
+      { bookId: '1', name: 'Номер 1', rates: [3000, 5000, 5500, 5500, 3000], priceFrom: 3000 },
+      { bookId: '2', name: 'Номер 2', rates: [3000, 5000, 5500, 5500, 3000], priceFrom: 3000 },
+      { bookId: '3', name: 'Номер 3', rates: [3500, 5500, 6000, 6000, 3500], priceFrom: 3500 },
+      { bookId: '4', name: 'Номер 4', rates: [3000, 5000, 5500, 5500, 3000], priceFrom: 3000 },
+      { bookId: '5', name: 'Номер 5', rates: [2500, 3500, 4000, 4000, 3000], priceFrom: 2500 },
+      { bookId: '6', name: 'Номер 6', rates: [3000, 5000, 5500, 5500, 3000], priceFrom: 3000 },
+      { bookId: 'apartments', name: 'Апартаменты', rates: [5900, 7900, 8900, 8900, 5900], priceFrom: 5900 },
+      { bookId: 'kuban-house', name: 'Кубанский дом', rates: [4900, 6900, 7900, 7900, 4900], priceFrom: 4900 },
     ],
   },
 };

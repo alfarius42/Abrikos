@@ -1,13 +1,15 @@
 /**
  * Тарифы: таблица на /price и «от … ₽/ночь» на деталках номеров.
- * Источник — Google Таблица (публичный CSV через gviz, без Google API и бэкенда)
- * или fallback из SITE_CONFIG.prices.
+ * Источник — Google Таблица (публичный CSV через gviz) или fallback из SITE_CONFIG.prices.
+ *
+ * Сопоставление ячеек (layout в config): год, месяцы, A-колонка названий, B… — цены.
+ * Содержимое ячеек отображается как есть; прочие ячейки таблицы не читаются.
  */
 (function () {
   var siteCfg = window.SITE_CONFIG || {};
   var sheetCfg = siteCfg.pricesSheet;
   var fallbackCfg = siteCfg.prices;
-  var CACHE_KEY = 'prices-sheet-cache-v1';
+  var CACHE_KEY = 'prices-sheet-cache-v3';
   var CACHE_TTL_MS = 6 * 60 * 60 * 1000;
   if (!fallbackCfg) return;
 
@@ -27,8 +29,6 @@
         return {
           bookId: cat.bookId,
           name: cat.name,
-          sheetLabel: cat.sheetLabel,
-          sheetRow: cat.sheetRow,
           rates: cat.rates.slice(),
           priceFrom: cat.priceFrom,
         };
@@ -36,11 +36,19 @@
     };
   }
 
-  function normalizeLabel(value) {
-    return String(value || '')
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, ' ');
+  function decodeSpreadsheetId(sheetConfig) {
+    if (!sheetConfig) return '';
+    if (sheetConfig.spreadsheetId) return String(sheetConfig.spreadsheetId).trim();
+    if (!sheetConfig.spreadsheetRef) return '';
+    try {
+      return atob(String(sheetConfig.spreadsheetRef)).trim();
+    } catch (_) {
+      return '';
+    }
+  }
+
+  function cellText(value) {
+    return String(value == null ? '' : value).trim();
   }
 
   function parsePrice(value) {
@@ -93,7 +101,7 @@
   }
 
   function sheetGvizUrl(range) {
-    var id = sheetCfg.spreadsheetId;
+    var id = decodeSpreadsheetId(sheetCfg);
     var query = 'tqx=out:csv&range=' + encodeURIComponent(range);
     if (sheetCfg.gid != null && sheetCfg.gid !== '') {
       query += '&gid=' + encodeURIComponent(String(sheetCfg.gid));
@@ -108,54 +116,53 @@
     });
   }
 
-  function applySheetData(csvRows, yearValue) {
-    if (!csvRows.length) return;
+  function applySheetData(dataRows, yearValue, monthsFromSheet) {
+    if (cellText(yearValue)) cfg.year = cellText(yearValue);
 
-    var monthRow = csvRows[0];
-    var months = monthRow.slice(1).map(function (m) {
-      return String(m || '').trim();
-    }).filter(Boolean);
-    if (months.length) cfg.months = months;
-
-    if (yearValue) {
-      var year = parseInt(String(yearValue).replace(/[^\d]/g, ''), 10);
-      if (!isNaN(year)) cfg.year = year;
+    if (monthsFromSheet && monthsFromSheet.length) {
+      cfg.months = monthsFromSheet.map(cellText);
     }
 
-    var ratesByLabel = {};
-    var ratesByRow = {};
+    var monthCount = cfg.months.length;
 
-    for (var r = 1; r < csvRows.length; r++) {
-      var sheetRow = sheetCfg.layout.headerRow + r;
-      var label = String(csvRows[r][0] || '').trim();
-      var rates = csvRows[r].slice(1).map(parsePrice).filter(function (n) {
+    dataRows.forEach(function (row, index) {
+      if (index >= cfg.categories.length) return;
+
+      var category = cfg.categories[index];
+      var name = cellText(row[0]);
+      if (name) category.name = name;
+
+      var rates = [];
+      for (var i = 0; i < monthCount; i++) {
+        rates.push(cellText(row[i + 1]));
+      }
+      category.rates = rates;
+
+      var numeric = rates.map(parsePrice).filter(function (n) {
         return n > 0;
       });
-      if (!rates.length) continue;
-
-      if (label) ratesByLabel[normalizeLabel(label)] = rates;
-      ratesByRow[sheetRow] = rates;
-    }
-
-    cfg.categories.forEach(function (category) {
-      var rates = null;
-      var labelKey = normalizeLabel(category.sheetLabel || category.name);
-
-      if (labelKey && ratesByLabel[labelKey]) {
-        rates = ratesByLabel[labelKey];
-      } else if (category.sheetRow && ratesByRow[category.sheetRow]) {
-        rates = ratesByRow[category.sheetRow];
-      }
-
-      if (rates && rates.length) {
-        category.rates = rates;
-        category.priceFrom = Math.min.apply(null, rates);
+      if (numeric.length) {
+        category.priceFrom = Math.min.apply(null, numeric);
       }
     });
+
+    return true;
   }
 
   function formatAmount(value) {
     return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
+  }
+
+  function formatRateDisplay(value) {
+    var text = cellText(value);
+    if (!text) return '—';
+
+    var num = parsePrice(text);
+    if (num > 0 && /^[\d\s]+$/.test(text)) {
+      return formatAmount(num);
+    }
+
+    return text;
   }
 
   function formatPriceFrom(priceFrom) {
@@ -188,26 +195,21 @@
       category.rates.forEach(function (rate) {
         var cell = document.createElement('td');
         cell.className = 'price-table__amount';
-        cell.textContent = formatAmount(rate);
+        cell.textContent = formatRateDisplay(rate);
         row.appendChild(cell);
       });
 
       var actionCell = document.createElement('td');
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'price-table__book';
       if (category.bookId) {
-        var button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'price-table__book';
         button.setAttribute('data-room-book', category.bookId);
-        button.textContent = 'Забронировать';
-        actionCell.appendChild(button);
       } else {
-        var button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'price-table__book';
         button.setAttribute('data-action', 'book');
-        button.textContent = 'Забронировать';
-        actionCell.appendChild(button);
       }
+      button.textContent = 'Забронировать';
+      actionCell.appendChild(button);
       row.appendChild(actionCell);
 
       tbody.appendChild(row);
@@ -220,13 +222,13 @@
 
     var monthCells = headRow.querySelectorAll('[data-price-month]');
     monthCells.forEach(function (cell, index) {
-      if (cfg.months[index]) cell.textContent = cfg.months[index];
+      cell.textContent = cfg.months[index] != null ? cfg.months[index] : '';
     });
   }
 
   function renderPriceYear() {
     var heading = document.getElementById('price-year-heading');
-    if (heading && cfg.year) {
+    if (heading && cfg.year != null && cfg.year !== '') {
       heading.textContent = 'Тарифы ' + cfg.year;
     }
   }
@@ -237,7 +239,7 @@
       if (!bookBtn) return;
       var category = findCategory(bookBtn.getAttribute('data-room-book'));
       var priceEl = content.querySelector('.room-detail__price');
-      if (category && priceEl) {
+      if (category && priceEl && category.priceFrom) {
         priceEl.textContent = formatPriceFrom(category.priceFrom);
       }
     });
@@ -251,7 +253,8 @@
   }
 
   function loadFromSheet() {
-    if (!sheetCfg || !sheetCfg.enabled || !sheetCfg.spreadsheetId) {
+    var spreadsheetId = decodeSpreadsheetId(sheetCfg);
+    if (!sheetCfg || !sheetCfg.enabled || !spreadsheetId) {
       return Promise.resolve(false);
     }
 
@@ -260,17 +263,27 @@
       return Promise.resolve(true);
     }
 
-    var yearPromise = sheetCfg.layout.yearCell
-      ? fetchSheetText(sheetCfg.layout.yearCell).then(function (text) {
+    var layout = sheetCfg.layout || {};
+    var yearPromise = layout.yearCell
+      ? fetchSheetText(layout.yearCell).then(function (text) {
           var rows = parseCsv(text);
           return rows.length && rows[0].length ? rows[0][0] : '';
         })
       : Promise.resolve('');
 
-    return yearPromise
-      .then(function (yearValue) {
-        return fetchSheetText(sheetCfg.layout.dataRange).then(function (text) {
-          applySheetData(parseCsv(text), yearValue);
+    var monthsPromise = layout.monthsRange
+      ? fetchSheetText(layout.monthsRange).then(function (text) {
+          var rows = parseCsv(text);
+          return rows.length ? rows[0] : [];
+        })
+      : Promise.resolve([]);
+
+    return Promise.all([yearPromise, monthsPromise])
+      .then(function (parts) {
+        var yearValue = parts[0];
+        var monthsFromSheet = parts[1];
+        return fetchSheetText(layout.dataRange).then(function (text) {
+          applySheetData(parseCsv(text), yearValue, monthsFromSheet);
           writeCacheFromConfig();
           return true;
         });
@@ -296,7 +309,7 @@
   function applyCachedData(data) {
     if (!data || !Array.isArray(data.months) || !Array.isArray(data.categories)) return false;
 
-    if (data.year) cfg.year = data.year;
+    if (data.year != null && data.year !== '') cfg.year = data.year;
     cfg.months = data.months.slice();
 
     var byBookId = {};
@@ -307,9 +320,12 @@
 
     cfg.categories.forEach(function (category) {
       var cached = byBookId[String(category.bookId)];
-      if (!cached || !Array.isArray(cached.rates) || !cached.rates.length) return;
-      category.rates = cached.rates.slice();
-      category.priceFrom = typeof cached.priceFrom === 'number' ? cached.priceFrom : Math.min.apply(null, cached.rates);
+      if (!cached) return;
+      if (cached.name) category.name = cached.name;
+      if (Array.isArray(cached.rates)) category.rates = cached.rates.slice();
+      if (typeof cached.priceFrom === 'number' && cached.priceFrom > 0) {
+        category.priceFrom = cached.priceFrom;
+      }
     });
 
     return true;
@@ -322,6 +338,7 @@
       categories: cfg.categories.map(function (category) {
         return {
           bookId: category.bookId,
+          name: category.name,
           rates: category.rates.slice(),
           priceFrom: category.priceFrom,
         };

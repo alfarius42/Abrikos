@@ -126,7 +126,7 @@ img/
 
 | Страницы | `index.html`, `rooms/**`, `territory/index.html`, `price/index.html`, `privacy/index.html`, `404.html` | Статический контент маршрутов |
 
-| Shell-поведение | `js/header.js` | Drawer, phone dropdown, CTA, логотип/скролл |
+| Shell-поведение | `js/header.js` | Drawer, phone dropdown, копирование/звонок по tel, CTA, логотип/скролл |
 
 | Навигация и бронирование | `js/navigation.js`, `js/booking.js` | Переход на главную к виджету с `?room=` и `#booking-widget` |
 
@@ -210,7 +210,7 @@ img/
 
 - `agastIframeSrc`, `agastHotelId`;
 
-- `pricesSheet`, `prices` (тарифы и fallback).
+- `pricesSheet` (`enabled`, `spreadsheetRef` base64, `gid`, `layout`), `prices` (fallback);
 
 
 
@@ -278,6 +278,28 @@ img/
 
 
 
+### 4.4 Телефоны (`a[href^="tel:"]`)
+
+
+
+| Viewport | Поведение по клику |
+
+|----------|-------------------|
+
+| Desktop (`> 760px`) | Копирование номера в буфер обмена + toast «Номер скопирован: …» |
+
+| Mobile (`≤ 760px`) | Переход в приложение «Телефон» с преднабранным номером (`tel:`) |
+
+
+
+- Обработчик в `js/header.js`, без бэкенда.
+
+- Цель Метрики `phone_click` — на всех кликах.
+
+- Ссылки `tel:` в HTML сохраняются для SEO, fallback и мобильных устройств.
+
+
+
 ## 5) Контракт `/price`
 
 
@@ -286,7 +308,21 @@ img/
 
 2. Блок про сезонность/актуальность.
 
-3. Таблица тарифов (Google Sheets + fallback).
+3. Таблица тарифов (Google Sheets + fallback в `config.js`).
+
+   **Сопоставление ячеек** (`pricesSheet.layout` — только эти диапазоны читаются, остальное игнорируется):
+
+   | Ячейки | Куда на сайте |
+   |--------|----------------|
+   | `yearCell` (A1) | Заголовок «Тарифы …» |
+   | `monthsRange` (B2:F2) | Заголовки колонок месяцев |
+   | `dataRange` (A3:F10) | Строка: A — название, B… — цены |
+
+   Содержимое ячеек показывается **как есть**. Порядок строк `dataRange` = порядок `prices.categories[]` (для `bookId` на кнопках бронирования).
+
+   **Загрузка:** `js/prices.js` → gviz CSV, кэш 6 ч. При ошибке сети — fallback из `prices`.
+
+   **ID таблицы:** в `config.js` как `spreadsheetRef` (base64), не plaintext. Полностью скрыть URL от DevTools **нельзя** без прокси/бэкенда — запрос виден во вкладке Network.
 
 4. Что включено.
 

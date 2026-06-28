@@ -22,6 +22,7 @@ test.describe('Sprint 1.1 — Header + Footer', () => {
   });
 
   test('desktop header opens phone dropdown with both numbers', async ({ page }) => {
+    await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
     await page.setViewportSize({ width: 1280, height: 800 });
     await expect(page.locator('.site-header__phones')).toBeHidden();
     await expect(page.locator('#btn-phone-menu')).toBeVisible();
@@ -31,6 +32,12 @@ test.describe('Sprint 1.1 — Header + Footer', () => {
     await expect(links).toHaveCount(2);
     await expect(links.nth(0)).toHaveAttribute('href', 'tel:+79637551055');
     await expect(links.nth(1)).toHaveAttribute('href', 'tel:+79057052657');
+
+    await links.nth(0).click();
+    await expect(page.locator('#phone-copy-toast')).toContainText('8 963 755 10 55');
+    await expect(page).toHaveURL('/');
+    const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+    expect(clipboardText).toBe('8 963 755 10 55');
   });
 
   test('mobile header shows short brand name and logo', async ({ page }) => {
@@ -54,6 +61,10 @@ test.describe('Sprint 1.1 — Header + Footer', () => {
     await expect(links.nth(0)).toHaveAttribute('href', 'tel:+79637551055');
     await expect(links.nth(1)).toHaveAttribute('href', 'tel:+79057052657');
     await expect(links.nth(0)).toContainText('8 963 755 10 55');
+
+    await links.nth(0).click();
+    await expect(page.locator('#phone-copy-toast')).toBeHidden();
+    await expect(page).toHaveURL('/');
   });
 
   test('footer and drawer email use mailto links', async ({ page }) => {

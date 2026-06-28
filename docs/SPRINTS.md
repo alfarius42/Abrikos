@@ -106,7 +106,7 @@
 
 - [x] Структура страницы по контракту.
 - [x] Таблица категорий с тарифами 2026.
-- [x] Загрузка актуальных цен из Google Sheets (`js/prices.js`) с fallback в `config.js`.
+- [x] Загрузка актуальных цен из Google Sheets (`js/prices.js`) с fallback в `config.js`; валидация строк, кэш v2.
 
 ### 1.7 `/privacy` + cookies
 
@@ -168,6 +168,7 @@
 
 - [ ] URL: `/`, `/rooms`, `/rooms/:id`, `/territory`, `/price`, `/privacy`, `404`.
 - [ ] Адаптивность (iOS Safari, Android Chrome).
+- [x] Телефоны: desktop — копирование в буфер, mobile — `tel:` (см. `docs/SPEC.md` §4.4).
 - [ ] SEO: `title`, `canonical`, `robots`, `sitemap`.
 - [ ] Smoke Метрики и Agast на production-домене.
 
