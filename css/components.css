@@ -1,0 +1,20 @@
+/* Buttons, cards, tags — см. HANDOFF §2, §5 */
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-sun);
+  color: var(--color-navy);
+  font-weight: 700;
+  font-size: 15px;
+  padding: 10px 22px;
+  border-radius: 10px;
+  border: none;
+  box-shadow: var(--shadow-btn);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+}
