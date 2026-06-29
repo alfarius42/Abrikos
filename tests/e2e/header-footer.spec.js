@@ -68,18 +68,18 @@ test.describe('Sprint 1.1 — Header + Footer', () => {
   });
 
   test('footer and drawer email use mailto links', async ({ page }) => {
-    await expect(page.locator('.site-footer__email')).toHaveAttribute('href', 'mailto:savin@rosevent.ru');
+    await expect(page.locator('.site-footer__email')).toHaveAttribute('href', 'mailto:Abrikos-Yeisk-Hotel@yandex.ru');
     await page.locator('#btn-menu').click();
-    await expect(page.locator('.site-drawer__email')).toHaveAttribute('href', 'mailto:savin@rosevent.ru');
+    await expect(page.locator('.site-drawer__email')).toHaveAttribute('href', 'mailto:Abrikos-Yeisk-Hotel@yandex.ru');
   });
 
   test('desktop footer email copies address to clipboard', async ({ page }) => {
     await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.locator('.site-footer__email').click();
-    await expect(page.locator('#phone-copy-toast')).toContainText('savin@rosevent.ru', { timeout: 3000 });
+    await expect(page.locator('#phone-copy-toast')).toContainText('Abrikos-Yeisk-Hotel@yandex.ru', { timeout: 3000 });
     const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
-    expect(clipboardText).toBe('savin@rosevent.ru');
+    expect(clipboardText).toBe('Abrikos-Yeisk-Hotel@yandex.ru');
   });
 
   test('footer renders nav, social links and legal block', async ({ page }) => {
@@ -93,7 +93,7 @@ test.describe('Sprint 1.1 — Header + Footer', () => {
       'href',
       'https://t.me/abrikos_yeisk_hotel'
     );
-    await expect(page.locator('.site-footer__email')).toHaveAttribute('href', 'mailto:savin@rosevent.ru');
+    await expect(page.locator('.site-footer__email')).toHaveAttribute('href', 'mailto:Abrikos-Yeisk-Hotel@yandex.ru');
     await expect(page.locator('.site-footer__address')).toContainText('ул. Советов');
   });
 

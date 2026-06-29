@@ -9,7 +9,7 @@
   var siteCfg = window.SITE_CONFIG || {};
   var sheetCfg = siteCfg.pricesSheet;
   var fallbackCfg = siteCfg.prices;
-  var CACHE_KEY = 'prices-sheet-cache-v3';
+  var CACHE_KEY = 'prices-sheet-cache-v4';
   var CACHE_TTL_MS = 6 * 60 * 60 * 1000;
   if (!fallbackCfg) return;
 
@@ -102,7 +102,11 @@
 
   function sheetGvizUrl(range) {
     var id = decodeSpreadsheetId(sheetCfg);
-    var query = 'tqx=out:csv&range=' + encodeURIComponent(range);
+    var query =
+      'tqx=out:csv&range=' +
+      encodeURIComponent(range) +
+      '&_=' +
+      Date.now();
     if (sheetCfg.gid != null && sheetCfg.gid !== '') {
       query += '&gid=' + encodeURIComponent(String(sheetCfg.gid));
     }
@@ -110,7 +114,7 @@
   }
 
   function fetchSheetText(range) {
-    return fetch(sheetGvizUrl(range), { credentials: 'omit' }).then(function (res) {
+    return fetch(sheetGvizUrl(range), { credentials: 'omit', cache: 'no-store' }).then(function (res) {
       if (!res.ok) throw new Error('sheet HTTP ' + res.status);
       return res.text();
     });
@@ -252,15 +256,10 @@
     hydrateRoomPrices();
   }
 
-  function loadFromSheet() {
+  function fetchSheetFromNetwork() {
     var spreadsheetId = decodeSpreadsheetId(sheetCfg);
     if (!sheetCfg || !sheetCfg.enabled || !spreadsheetId) {
       return Promise.resolve(false);
-    }
-
-    var cached = readCache();
-    if (cached && applyCachedData(cached)) {
-      return Promise.resolve(true);
     }
 
     var layout = sheetCfg.layout || {};
@@ -358,7 +357,12 @@
 
   function scheduleSheetRefresh(onDone) {
     var run = function () {
-      loadFromSheet().then(function (loaded) {
+      var cached = readCache();
+      if (cached && applyCachedData(cached)) {
+        onDone();
+      }
+
+      fetchSheetFromNetwork().then(function (loaded) {
         if (loaded) onDone();
       });
     };

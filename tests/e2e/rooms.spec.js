@@ -29,8 +29,8 @@ test.describe('Sprint 1.3 — Разводящая /rooms', () => {
     await expect(page.locator('.room-card').nth(2).locator('.room-card__area')).toHaveText('24 м²');
     await expect(page.locator('.room-card').nth(2)).toContainText('Люкс');
     await expect(page.locator('.room-card').nth(4).locator('.room-card__area')).toHaveText('18 м²');
-    await expect(page.locator('.room-card').nth(6).locator('.room-card__area')).toHaveText('20 м²');
-    await expect(page.locator('.room-card').nth(7).locator('.room-card__area')).toHaveText('36 м²');
+    await expect(page.locator('.room-card').nth(6).locator('.room-card__area')).toHaveText('70 м²');
+    await expect(page.locator('.room-card').nth(7).locator('.room-card__area')).toHaveText('68 м²');
     await expect(page.locator('.room-card .room-card__price')).toHaveCount(0);
   });
 

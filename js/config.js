@@ -24,7 +24,7 @@ window.SITE_CONFIG = {
     { label: '8 905 705 26 57', href: 'tel:+79057052657' },
   ],
 
-  email: 'savin@rosevent.ru',
+  email: 'Abrikos-Yeisk-Hotel@yandex.ru',
 
   social: {
     vk: 'https://vk.com/abrikos_yeisk_hotel',
@@ -42,7 +42,7 @@ window.SITE_CONFIG = {
   legal: {
     /** Управление физлицом, без ИНН/ОГРН на сайте */
     operatorType: 'individual',
-    operatorName: 'Савин Александр Сергеевич',
+    operatorName: 'Савин Александр Владимирович',
     displayName: 'Гостевой дом «Абрикос»',
     address: 'Россия, Ейск, ул. Советов, д. 12',
     inn: null,

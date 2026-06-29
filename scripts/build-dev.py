@@ -8,6 +8,7 @@ price/, privacy/, css/, js/, img/, fonts/
 """
 from __future__ import annotations
 
+import argparse
 import platform
 import shutil
 import subprocess
@@ -79,27 +80,52 @@ def minify_assets() -> None:
             )
 
 
-def write_manifest() -> None:
+def write_manifest(*, production: bool) -> None:
     manifest = DIST / "BUILD.txt"
-    manifest.write_text(
-        "\n".join(
-            [
-                "Abrikos — dev/staging build",
-                f"Built: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}",
-                "Source: develop (scripts/build-dev.py)",
-                "",
-                "Upload entire dist/ contents to hosting document root.",
-            ]
-        )
-        + "\n",
-        encoding="utf-8",
-    )
+    if production:
+        lines = [
+            "Abrikos — production build",
+            f"Built: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}",
+            "Target: https://abrikos-yeisk.ru",
+            "Source: scripts/build-prod.py",
+            "",
+            "Upload entire dist/ contents to hosting document root.",
+            "Includes: .htaccess, robots.txt, sitemap.xml, minified css/js.",
+        ]
+    else:
+        lines = [
+            "Abrikos — dev/staging build",
+            f"Built: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}",
+            "Source: develop (scripts/build-dev.py)",
+            "",
+            "Upload entire dist/ contents to hosting document root.",
+        ]
+    manifest.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def verify_seo_files() -> None:
+    required = ("robots.txt", "sitemap.xml", ".htaccess")
+    missing = [name for name in required if not (ROOT / name).is_file()]
+    if missing:
+        print(f"ERROR: missing SEO/deploy files: {', '.join(missing)}", file=sys.stderr)
+        raise SystemExit(1)
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description="Build static site into dist/")
+    parser.add_argument(
+        "--prod",
+        action="store_true",
+        help="production build (same output, production manifest)",
+    )
+    args = parser.parse_args()
+
+    if args.prod:
+        verify_seo_files()
+
     copy_production_files()
     minify_assets()
-    write_manifest()
+    write_manifest(production=args.prod)
     print(f"\nDone: {DIST}")
     return 0
 

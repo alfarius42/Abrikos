@@ -8,7 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "../..");
 const SOURCE_DIR = path.join(ROOT, "ImageSources");
 
-const INPUT_EXT = new Set([".jpg", ".jpeg", ".png"]);
+const INPUT_EXT = new Set([".jpg", ".jpeg", ".jfif", ".png"]);
 const MAX_WIDTH = 1600;
 const WEBP_QUALITY = 82;
 
@@ -20,7 +20,7 @@ function isInputFile(filePath) {
 }
 
 function webpPathFor(inputPath) {
-  return inputPath.replace(/\.(jpe?g|png)$/i, ".webp");
+  return inputPath.replace(/\.(jpe?g|jfif|png)$/i, ".webp");
 }
 
 async function collectFiles(dir) {
