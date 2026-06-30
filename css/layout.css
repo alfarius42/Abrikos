@@ -221,17 +221,13 @@ body.drawer-open {
 }
 
 @media (max-width: 760px) {
-  .site-header__logo-text--full {
+  .site-header__logo-text--full,
+  .site-header__logo-text--short {
     display: none;
   }
 
-  .site-header__logo-text--short {
-    display: inline;
-  }
-
-  .site-header__logo-text {
-    max-width: none;
-    font-size: 20px;
+  .site-header__logo {
+    flex: 0 0 auto;
   }
 
   .site-header__logo-img {

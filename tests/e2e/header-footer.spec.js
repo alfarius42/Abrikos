@@ -40,11 +40,11 @@ test.describe('Sprint 1.1 — Header + Footer', () => {
     expect(clipboardText).toBe('8 963 755 10 55');
   });
 
-  test('mobile header shows short brand name and logo', async ({ page }) => {
+  test('mobile header shows logo only without brand text', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await expect(page.locator('.site-header__logo-text--short')).toBeVisible();
-    await expect(page.locator('.site-header__logo-text--short')).toHaveText('Абрикос');
+    await expect(page.locator('.site-header__logo-text--short')).toBeHidden();
     await expect(page.locator('.site-header__logo-text--full')).toBeHidden();
+    await expect(page.locator('.site-header__logo-img')).toBeVisible();
     await expect(page.locator('.site-header__logo-img')).toHaveAttribute('src', /logo-header\.webp/);
   });
 
