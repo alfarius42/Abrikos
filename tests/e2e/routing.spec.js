@@ -45,7 +45,8 @@ test.describe('Routing contracts — price, notFound, popstate', () => {
 
     await page.goBack();
     await expect(page).toHaveURL('/');
-    await expect(page.locator('.home-block')).toHaveCount(4);
+    await expect(page.locator('.home-block')).toHaveCount(3);
+    await expect(page.locator('.home-welcome')).toBeVisible();
 
     await page.goForward();
     await expect(page).toHaveURL('/rooms');

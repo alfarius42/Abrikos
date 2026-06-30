@@ -20,22 +20,32 @@ test.describe('Sprint 1.2 — Главная', () => {
     await expect(page.locator('main h1')).toHaveCount(1);
     await expect(page.locator('main h1')).toContainText('Гостевой дом «Абрикос» в Ейске');
 
+    await expect(page.locator('#home-welcome-title')).toHaveCount(1);
     await expect(page.locator('#home-highlights-title')).toHaveCount(1);
-    await expect(page.locator('.home-block__text h3')).toHaveCount(4);
-    await expect(page.locator('main h2')).toHaveCount(4);
+    await expect(page.locator('.home-block__text h3')).toHaveCount(3);
+    await expect(page.locator('main h2')).toHaveCount(6);
     await expect(page.locator('#home-about-title')).toBeVisible();
     await expect(page.locator('#home-map-title')).toBeVisible();
     await expect(page.locator('#booking-widget-title')).toBeVisible();
     await expect(page.locator('.home-about h3')).toHaveCount(2);
   });
 
-  test('renders four chess blocks from data', async ({ page }) => {
+  test('welcome section, chess blocks and highlights render in order', async ({ page }) => {
+    await expect(page.locator('.home-welcome')).toContainText('Добро пожаловать в «Абрикос»');
+    await expect(page.locator('#home-welcome-title')).toContainText('Добро пожаловать');
+    await expect(page.locator('.home-welcome')).toContainText('5 минут');
+
     const blocks = page.locator('.home-block');
-    await expect(blocks).toHaveCount(4);
-    await expect(blocks.nth(0)).toContainText('Добро пожаловать в «Абрикос»');
-    await expect(blocks.nth(0).locator('h3')).toContainText('Добро пожаловать');
-    await expect(blocks.nth(0)).toContainText('5 минут');
-    await expect(blocks.nth(3)).toContainText('8 вариантов размещения');
+    await expect(blocks).toHaveCount(3);
+    await expect(blocks.nth(0)).toContainText('Море — в пяти минутах от порога');
+    await expect(blocks.nth(2)).toContainText('8 вариантов размещения');
+
+    await expect(page.locator('.home-highlights__item')).toHaveCount(6);
+    await expect(page.locator('#home-highlights-title')).toContainText('Почему отдыхают');
+
+    const welcomeBox = await page.locator('.home-welcome').boundingBox();
+    const highlightsBox = await page.locator('.home-highlights').boundingBox();
+    expect(welcomeBox.y).toBeLessThan(highlightsBox.y);
   });
 
   test('chess blocks use fixed image paths as placeholders', async ({ page }) => {
@@ -77,18 +87,26 @@ test.describe('Sprint 1.2 — Главная', () => {
     expect(mapBox.y).toBeLessThan(bookingBox.y);
   });
 
+  test('desktop welcome title aligns with page header h1', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+
+    const headerTitle = await page.locator('.page-header h1').boundingBox();
+    const welcomeTitle = await page.locator('#home-welcome-title').boundingBox();
+    expect(Math.abs(headerTitle.x - welcomeTitle.x)).toBeLessThanOrEqual(2);
+  });
+
   test('desktop chess blocks alternate text and image columns', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
 
     const firstGrid = page.locator('.home-blocks .home-block').nth(0).locator('.home-block__grid');
     const firstText = await firstGrid.locator('.home-block__text').boundingBox();
     const firstMedia = await firstGrid.locator('.home-block__media').boundingBox();
-    expect(firstText.x).toBeLessThan(firstMedia.x);
+    expect(firstMedia.x).toBeLessThan(firstText.x);
 
     const secondGrid = page.locator('.home-blocks .home-block').nth(1).locator('.home-block__grid');
     const secondText = await secondGrid.locator('.home-block__text').boundingBox();
     const secondMedia = await secondGrid.locator('.home-block__media').boundingBox();
-    expect(secondMedia.x).toBeLessThan(secondText.x);
+    expect(secondText.x).toBeLessThan(secondMedia.x);
   });
 
   test('booking section opens Agast in new tab without URL in HTML', async ({ page, context }) => {
@@ -108,11 +126,11 @@ test.describe('Sprint 1.2 — Главная', () => {
     await popup.close();
   });
 
-  test('mobile layout puts text before image in content blocks', async ({ page }) => {
+  test('mobile layout puts text before image in welcome block', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    const firstGrid = page.locator('.home-block').first().locator('.home-block__grid');
-    const mediaBox = await firstGrid.locator('.home-block__media').boundingBox();
-    const textBox = await firstGrid.locator('.home-block__text').boundingBox();
+    const welcomeGrid = page.locator('.home-welcome .home-block__grid');
+    const mediaBox = await welcomeGrid.locator('.home-block__media').boundingBox();
+    const textBox = await welcomeGrid.locator('.home-block__text').boundingBox();
     expect(textBox.y).toBeLessThan(mediaBox.y);
   });
 });
