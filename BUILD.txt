@@ -1,0 +1,8 @@
+Abrikos — production build
+Built: 2026-06-30 09:48:25 UTC
+Target: https://abrikos-yeisk.ru
+Source: scripts/build-prod.py
+
+Upload entire dist/ contents to hosting document root (www/).
+FTP: BINARY mode only. Or upload abrikos-dist.zip and extract on server.
+Verify after deploy: python scripts/verify-remote.py
