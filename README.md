@@ -70,7 +70,7 @@ prototype/          референс из Figma Make
 
 - контакты, соцсети, навигация;
 - `siteUrl`, карта и POI (`location`);
-- тарифы 2026 (`prices`, `pricesSheet`);
+- тарифы 2026 (`prices`);
 - ID Яндекс.Метрики (`yandexMetrikaId`);
 - параметры Agast (`agastIframeSrc`, `agastHotelId`) — **ещё не заполнены**.
 

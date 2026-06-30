@@ -150,26 +150,8 @@ window.SITE_CONFIG = {
   yandexMapImageSrc: '',
 
   /**
-   * Google Таблица с тарифами — публичный CSV (gviz), без Google API и бэкенда.
-   * Доступ: «Просмотр для всех, у кого есть ссылка» (или шире).
-   * spreadsheetRef — base64 ID (не plaintext в config); URL запроса всё равно виден в Network.
-   *
-   * Раскладка (только эти ячейки): A1 — год; B2:F2 — месяцы; A3:F10 — строки (A название, B… цены).
-   */
-  pricesSheet: {
-    enabled: true,
-    spreadsheetRef: 'MXVhX21RcHV5eEZrLTd1MW5ybjg1aFVHZkFJVllPNVc1X3JSXzRrd2F1bzA=',
-    gid: 0,
-    layout: {
-      yearCell: 'A1',
-      monthsRange: 'B2:F2',
-      dataRange: 'A3:F10',
-    },
-  },
-
-  /**
-   * Fallback до загрузки таблицы. Порядок categories[] = строки dataRange (1-я строка → 1-я категория).
-   * bookId — только для кнопки «Забронировать» на деталках; названия и цены берутся из ячеек таблицы.
+   * Локальные тарифы для /price и карточек номеров.
+   * bookId используется для кнопки «Забронировать» на деталках.
    */
   prices: {
     year: 2026,

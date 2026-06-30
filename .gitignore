@@ -8,6 +8,7 @@ test-results/
 
 # Build
 dist/
+abrikos-dist.zip
 prototype/dist/
 .cache/
 

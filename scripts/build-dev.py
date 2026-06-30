@@ -89,8 +89,9 @@ def write_manifest(*, production: bool) -> None:
             "Target: https://abrikos-yeisk.ru",
             "Source: scripts/build-prod.py",
             "",
-            "Upload entire dist/ contents to hosting document root.",
-            "Includes: .htaccess, robots.txt, sitemap.xml, minified css/js.",
+            "Upload entire dist/ contents to hosting document root (www/).",
+            "FTP: BINARY mode only. Or upload abrikos-dist.zip and extract on server.",
+            "Verify after deploy: python scripts/verify-remote.py",
         ]
     else:
         lines = [
@@ -101,6 +102,14 @@ def write_manifest(*, production: bool) -> None:
             "Upload entire dist/ contents to hosting document root.",
         ]
     manifest.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_zip_archive() -> None:
+    archive_base = ROOT / "abrikos-dist"
+    if archive_base.with_suffix(".zip").exists():
+        archive_base.with_suffix(".zip").unlink()
+    shutil.make_archive(str(archive_base), "zip", DIST)
+    print(f"Archive: {archive_base.with_suffix('.zip')}")
 
 
 def verify_seo_files() -> None:
@@ -126,6 +135,8 @@ def main() -> int:
     copy_production_files()
     minify_assets()
     write_manifest(production=args.prod)
+    if args.prod:
+        write_zip_archive()
     print(f"\nDone: {DIST}")
     return 0
 
