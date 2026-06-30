@@ -220,7 +220,7 @@ body.drawer-open {
   flex-shrink: 0;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 1024px) {
   .site-header__logo-text--full,
   .site-header__logo-text--short {
     display: none;
@@ -243,6 +243,12 @@ body.drawer-open {
   .site-header__cta {
     padding: 10px 14px;
     font-size: 14px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .site-header__logo-text--full {
+    display: inline;
   }
 }
 

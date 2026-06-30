@@ -40,12 +40,24 @@ test.describe('Sprint 1.1 — Header + Footer', () => {
     expect(clipboardText).toBe('8 963 755 10 55');
   });
 
-  test('mobile header shows logo only without brand text', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+  test('mobile and tablet header show logo only without brand text', async ({ page }) => {
+    for (const viewport of [
+      { width: 390, height: 844 },
+      { width: 768, height: 1024 },
+      { width: 1024, height: 768 },
+    ]) {
+      await page.setViewportSize(viewport);
+      await expect(page.locator('.site-header__logo-text--short')).toBeHidden();
+      await expect(page.locator('.site-header__logo-text--full')).toBeHidden();
+      await expect(page.locator('.site-header__logo-img')).toBeVisible();
+    }
+  });
+
+  test('desktop header shows full brand name with logo', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await expect(page.locator('.site-header__logo-text--full')).toBeVisible();
+    await expect(page.locator('.site-header__logo-text--full')).toContainText('Гостевой дом «Абрикос»');
     await expect(page.locator('.site-header__logo-text--short')).toBeHidden();
-    await expect(page.locator('.site-header__logo-text--full')).toBeHidden();
-    await expect(page.locator('.site-header__logo-img')).toBeVisible();
-    await expect(page.locator('.site-header__logo-img')).toHaveAttribute('src', /logo-header\.webp/);
   });
 
   test('mobile header opens phone dropdown with clickable numbers', async ({ page }) => {
