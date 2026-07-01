@@ -149,6 +149,7 @@ body.drawer-open {
   position: relative;
   display: block;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .site-header__phone-toggle {
@@ -157,12 +158,13 @@ body.drawer-open {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.14);
+  background: var(--color-sun);
   border: none;
   border-radius: 10px;
-  color: var(--color-white);
+  color: var(--color-navy);
+  box-shadow: var(--shadow-btn);
   cursor: pointer;
-  transition: background 150ms ease, color 150ms ease;
+  transition: transform 150ms ease, box-shadow 150ms ease;
 }
 
 .site-header__phone-toggle svg {
@@ -172,21 +174,31 @@ body.drawer-open {
 
 .site-header__phone-toggle:hover,
 .site-header__phone-toggle.is-open {
-  background: rgba(255, 255, 255, 0.25);
-  color: var(--color-sun);
+  background: var(--color-sun);
+  color: var(--color-navy);
+  box-shadow: var(--shadow-btn);
+  transform: translateY(-1px);
 }
 
 .site-header__phone-menu {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
+  left: auto;
   z-index: 60;
-  min-width: 230px;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: calc(100vw - 32px);
   padding: 8px;
   background: var(--color-white);
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: 0 8px 32px rgba(15, 42, 92, 0.16);
+}
+
+.site-header__phone-menu.is-fixed {
+  position: fixed;
+  right: auto;
 }
 
 .site-header__phone-menu[hidden] {
@@ -203,6 +215,7 @@ body.drawer-open {
   font-weight: 600;
   color: var(--color-navy);
   text-decoration: none;
+  white-space: nowrap;
   transition: background 150ms ease, color 150ms ease;
 }
 
@@ -235,9 +248,22 @@ body.drawer-open {
     height: 40px;
   }
 
+  .site-header__phone-dropdown {
+    margin-left: auto;
+  }
+
   .site-header__phone-toggle {
     width: 40px;
     height: 40px;
+  }
+
+  .site-header__phone-menu {
+    max-width: calc(100vw - 32px);
+  }
+
+  .site-header__phone-menu-link {
+    padding: 11px 12px;
+    font-size: clamp(12px, 3.4vw, 14px);
   }
 
   .site-header__cta {
@@ -256,6 +282,14 @@ body.drawer-open {
   .site-header__cta {
     padding: 10px 10px;
     font-size: 13px;
+  }
+
+  .site-header__phone-menu {
+    max-width: calc(100vw - 24px);
+  }
+
+  .site-header__phone-menu-link {
+    padding: 10px 10px;
   }
 }
 

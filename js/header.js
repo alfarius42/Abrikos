@@ -32,10 +32,69 @@
     menu.hidden = !open;
     toggle.classList.toggle('is-open', open);
     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+    if (open) {
+      requestAnimationFrame(function () {
+        positionPhoneMenu();
+      });
+    } else {
+      resetPhoneMenuPosition();
+    }
   }
 
   function closePhoneMenu() {
     setPhoneMenuOpen(false);
+  }
+
+  var PHONE_MENU_VIEWPORT_PADDING = 16;
+
+  function resetPhoneMenuPosition() {
+    var menu = document.getElementById('phone-menu');
+    if (!menu) return;
+
+    menu.classList.remove('is-fixed');
+    menu.style.top = '';
+    menu.style.left = '';
+    menu.style.right = '';
+    menu.style.width = '';
+    menu.style.maxWidth = '';
+  }
+
+  function positionPhoneMenu() {
+    var menu = document.getElementById('phone-menu');
+    var toggle = document.getElementById('btn-phone-menu');
+    if (!menu || !toggle || menu.hidden) return;
+
+    resetPhoneMenuPosition();
+
+    var toggleRect = toggle.getBoundingClientRect();
+    var menuWidth = menu.offsetWidth;
+    var maxWidth = window.innerWidth - PHONE_MENU_VIEWPORT_PADDING * 2;
+
+    if (menuWidth > maxWidth) {
+      menuWidth = maxWidth;
+      menu.style.width = maxWidth + 'px';
+      menu.style.maxWidth = maxWidth + 'px';
+    }
+
+    var left = toggleRect.right - menuWidth;
+    if (left < PHONE_MENU_VIEWPORT_PADDING) {
+      left = PHONE_MENU_VIEWPORT_PADDING;
+    }
+    if (left + menuWidth > window.innerWidth - PHONE_MENU_VIEWPORT_PADDING) {
+      left = window.innerWidth - PHONE_MENU_VIEWPORT_PADDING - menuWidth;
+    }
+
+    menu.classList.add('is-fixed');
+    menu.style.top = toggleRect.bottom + 8 + 'px';
+    menu.style.left = left + 'px';
+  }
+
+  function syncPhoneMenuPosition() {
+    var menu = document.getElementById('phone-menu');
+    if (menu && !menu.hidden) {
+      positionPhoneMenu();
+    }
   }
 
   var copyToastTimer;
@@ -134,9 +193,12 @@
       'scroll',
       function () {
         header.classList.toggle('is-scrolled', window.scrollY > 40);
+        syncPhoneMenuPosition();
       },
       { passive: true }
     );
+
+    window.addEventListener('resize', syncPhoneMenuPosition, { passive: true });
 
     document.getElementById('btn-menu')?.addEventListener('click', function () {
       closePhoneMenu();
