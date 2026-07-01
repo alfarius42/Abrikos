@@ -1,5 +1,5 @@
 Abrikos — production build
-Built: 2026-06-30 19:41:08 UTC
+Built: 2026-07-01 14:47:49 UTC
 Target: https://abrikos-yeisk.ru
 Source: scripts/build-prod.py
 
